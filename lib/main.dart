@@ -1,21 +1,25 @@
+import 'dart:developer';
+
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:smartwin/bloc/c4_bloc.dart';
-import 'package:smartwin/constants.dart';
-import 'package:smartwin/cubit/auth/auth_cubit.dart';
-import 'package:smartwin/dio.dart';
-import 'package:smartwin/generated/l10n.dart';
-import 'package:smartwin/screens/login_screen.dart';
-import 'package:smartwin/screens/main_screen.dart';
-import 'package:smartwin/screens/register_screen.dart';
-import 'package:smartwin/screens/room_screen.dart';
-import 'package:smartwin/stores/all_stores/cubit/stores_cubit.dart';
+import 'package:smartwin/common/utils/cache_helper.dart';
+import 'package:smartwin/features/c4/bloc/c4_bloc.dart';
+import 'package:smartwin/common/constants/constants.dart';
+import 'package:smartwin/features/auth/cubit/auth_cubit.dart';
+import 'package:smartwin/common/utils/dio_helper.dart';
+import 'package:smartwin/config/generated/l10n.dart';
+import 'package:smartwin/features/auth/screens/login_screen.dart';
+import 'package:smartwin/features/home/screens/main_screen.dart';
+import 'package:smartwin/features/auth/screens/register_screen.dart';
+import 'package:smartwin/features/c4/screens/room_screen.dart';
+import 'package:smartwin/features/stores/cubit/stores_cubit.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DioHelper.init();
+  await CacheHelper.init();
   runApp(const MyApp());
 }
 
@@ -57,7 +61,9 @@ class MyApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: S.delegate.supportedLocales,
-        home: const RegisterScreen(),
+        home: CacheHelper.getCache(key: 'token') != null
+            ? MainScreen()
+            : const RegisterScreen(),
       ),
     );
   }
