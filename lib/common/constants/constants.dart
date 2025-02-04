@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:smartwin/common/components/helpers.dart';
+import 'package:sw/common/components/helpers.dart';
 
 List images = ["images/kkk.jpg", "images/sss.jpg", "images/view.jpg"];
 

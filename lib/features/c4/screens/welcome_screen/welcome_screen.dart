@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:smartwin/common/components/button_animated.dart';
-import 'package:smartwin/features/c4/screens/welcome_screen/contant.dart';
+import 'package:sw/common/components/button_animated.dart';
+import 'package:sw/features/c4/screens/welcome_screen/contant.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class WelcomeScreen extends StatelessWidget {

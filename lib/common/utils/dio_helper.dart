@@ -1,12 +1,14 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
-import 'package:smartwin/common/utils/cache_helper.dart';
+import 'package:sw/common/utils/cache_helper.dart';
 
 class DioHelper {
   static Dio? dio;
   static init() {
     dio = Dio(
       BaseOptions(
-        baseUrl: "http://172.20.10.9:8000/api/",
+        baseUrl: "https://c6d1-212-102-51-49.ngrok-free.app/api/",
         headers: {"Accept": "application/json"},
       ),
     );
@@ -22,19 +24,27 @@ class DioHelper {
 
   static Future<Response?> getAuthData(
       {required String path, Map<String, dynamic>? queryParameters}) async {
+    log(CacheHelper.getCache(key: 'token'));
     return await dio?.get(path,
         queryParameters: queryParameters,
-        options: Options(
-            headers: {"Authorization": CacheHelper.getCache(key: 'token')}));
+        options: Options(headers: {
+          "Authorization": "Bearer ${CacheHelper.getCache(key: 'token')}",
+          "Content-Type": "appilcation/json",
+          'Accept': 'application/json'
+        }));
   }
 
-  static Future<Response?> postData(
-      {required String path, Map<String, dynamic>? data}) async {
+  static Future<Response?> postData({
+    required String path,
+    dynamic data,
+    Map<String, String>? headers,
+  }) async {
     return await dio?.post(path,
         data: data,
         options: Options(headers: {
-          "Authorization":
-              "Bearer 3609|HGdFuysgwdGrFlZMvYcqgnGP8rrQXN9ZCAdRuznm"
+          "Authorization": 'Bearer ${CacheHelper.getCache(key: 'token')}',
+          'Accept': 'application/json',
+          ...?headers,
         }));
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
+// import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 
 class MyTextField extends FormField<String> {
   MyTextField({
@@ -38,7 +39,6 @@ class MyTextField extends FormField<String> {
                                 offset: const Offset(-0.5, -0.5),
                                 blurRadius: 5,
                                 blurStyle: BlurStyle.normal,
-                                inset: true,
                                 color: field.hasError
                                     ? Colors.red.shade300
                                     : Colors.black38),
@@ -46,7 +46,6 @@ class MyTextField extends FormField<String> {
                                 offset: const Offset(0.5, 1),
                                 blurRadius: 5,
                                 blurStyle: BlurStyle.normal,
-                                inset: true,
                                 color: field.hasError
                                     ? Colors.red.shade200
                                     : Colors.black45)

@@ -1,6 +1,6 @@
 {
-    "name": "smartwin",
-    "short_name": "smartwin",
+    "name": "sw",
+    "short_name": "sw",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

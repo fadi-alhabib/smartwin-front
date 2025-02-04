@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:smartwin/features/c4/models/connect4/user_model.dart';
+import 'package:sw/features/c4/models/connect4/user_model.dart';
 
 class C4Move {
   final int column;

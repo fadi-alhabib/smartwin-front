@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:smartwin/common/components/helpers.dart';
-import 'package:smartwin/common/constants/colors.dart';
+import 'package:sw/common/components/helpers.dart';
+import 'package:sw/common/constants/colors.dart';
 
 class Logo extends StatelessWidget {
   const Logo({super.key, required double width, required double height});

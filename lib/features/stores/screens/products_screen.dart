@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:smartwin/common/components/grid_view_builder.dart';
-import 'package:smartwin/features/stores/widgets/store_item_builder.dart';
+import 'package:sw/common/components/grid_view_builder.dart';
+import 'package:sw/features/stores/widgets/store_item_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 

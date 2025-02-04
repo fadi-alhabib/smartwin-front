@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smartwin/common/constants/constants.dart';
+import 'package:sw/common/constants/constants.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class AppDialog extends HookWidget {

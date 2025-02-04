@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smartwin/common/constants/colors.dart';
+import 'package:sw/common/constants/colors.dart';
 
 import 'helpers.dart';
 
@@ -37,6 +37,13 @@ class _AnimatedButtonState extends State<AnimatedButton>
     widget.scaleAnimation ? scaleController() : null;
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.translateAnimation ? _translateController.dispose() : null;
+    widget.scaleAnimation ? _scaleController.dispose() : null;
+    super.dispose();
   }
 
   translateController() {
@@ -114,7 +121,7 @@ class _AnimatedButtonState extends State<AnimatedButton>
           color: Colors.transparent,
           child: InkWell(
             splashFactory: InkSparkle.splashFactory,
-            overlayColor: MaterialStateColor.resolveWith(
+            overlayColor: WidgetStateColor.resolveWith(
                 (states) => widget.overlayColor ?? Colors.blue),
             onTap: widget.onTap,
             child: SizedBox.expand(child: widget.child),

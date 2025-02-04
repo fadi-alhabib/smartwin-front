@@ -1,27 +1,27 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:smartwin/common/components/button_animated.dart';
-import 'package:smartwin/common/components/helpers.dart';
-import 'package:smartwin/common/components/text_field.dart';
+import 'package:sw/common/components/button_animated.dart';
+import 'package:sw/common/components/helpers.dart';
+import 'package:sw/common/components/text_field.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
-import 'package:images_picker/images_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 
 class CreateProductScreen extends HookWidget {
   CreateProductScreen({super.key});
   var formKey = GlobalKey<FormState>();
-  pickImages(images) async {
-    ImagesPicker.pick(count: 3, pickType: PickType.image).then((value) {
-      images.value = value;
-    });
+
+  pickImages(ValueNotifier<List<XFile>> images) async {
+    final ImagePicker picker = ImagePicker();
+    final List<XFile> pickedFiles = await picker.pickMultiImage();
+    images.value = pickedFiles;
   }
 
   @override
   Widget build(BuildContext context) {
-    var images = useState(<Media>[]);
+    var images = useState(<XFile>[]);
     var productNameController = useTextEditingController();
     var productPriceController = useTextEditingController();
     var productDescriptionController = useTextEditingController();
@@ -93,7 +93,7 @@ class CreateProductScreen extends HookWidget {
     );
   }
 
-  Widget showImageWidget(context, List images) {
+  Widget showImageWidget(context, List<XFile> images) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
@@ -114,10 +114,8 @@ class CreateProductScreen extends HookWidget {
                   child: Container(
                       clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
-                          color: images.elementAtOrNull(1) != null
-                              ? null
-                              : Colors.amber),
-                      child: images.elementAtOrNull(1) != null
+                          color: images.length > 1 ? null : Colors.amber),
+                      child: images.length > 1
                           ? Image.file(File(images[1].path))
                           : null),
                 ),
@@ -126,10 +124,8 @@ class CreateProductScreen extends HookWidget {
                   child: Container(
                       clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
-                          color: images.elementAtOrNull(2) != null
-                              ? null
-                              : Colors.amber),
-                      child: images.elementAtOrNull(2) != null
+                          color: images.length > 2 ? null : Colors.amber),
+                      child: images.length > 2
                           ? Image.file(File(images[2].path))
                           : null),
                 ),
@@ -142,7 +138,7 @@ class CreateProductScreen extends HookWidget {
   }
 
   Padding pickImageWidget(
-      ValueNotifier<List<Media>> images, BuildContext context) {
+      ValueNotifier<List<XFile>> images, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(

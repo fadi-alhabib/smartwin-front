@@ -1,8 +1,10 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:smartwin/common/utils/dio_helper.dart';
-import 'package:smartwin/features/home/models/home_data_model.dart';
+import 'package:sw/common/utils/dio_helper.dart';
+import 'package:sw/features/home/models/home_data_model.dart';
 
 part 'home_state.dart';
 
@@ -12,8 +14,12 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> getHomeData() async {
     emit(HomeDataLoading());
     try {
-      //TODO::COMPLETE THIS BY CONVERTING TO MODEL AND PASSING IT TO THE SUCCESS STATE
       final response = await DioHelper.getAuthData(path: '/ads/home');
-    } on DioException catch (e) {}
+      log(response!.data.toString());
+      emit(HomeDataSuccess(HomeDataModel.fromJson(response.data['data'])));
+    } on DioException catch (e) {
+      log(e.toString());
+      emit(HomeDataError(e.response!.data.toString()));
+    }
   }
 }

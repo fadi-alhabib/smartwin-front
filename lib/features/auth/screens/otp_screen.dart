@@ -3,12 +3,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:smartwin/common/components/button_animated.dart'
-    hide ScaleAnimation;
-import 'package:smartwin/common/components/logo.dart';
-import 'package:smartwin/features/auth/cubit/auth_cubit.dart';
-import 'package:smartwin/features/home/screens/main_screen.dart';
-import 'package:smartwin/common/constants/colors.dart';
+import 'package:sw/common/components/button_animated.dart' hide ScaleAnimation;
+import 'package:sw/common/components/logo.dart';
+import 'package:sw/features/auth/cubit/auth_cubit.dart';
+import 'package:sw/features/home/screens/main_screen.dart';
+import 'package:sw/common/constants/colors.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';

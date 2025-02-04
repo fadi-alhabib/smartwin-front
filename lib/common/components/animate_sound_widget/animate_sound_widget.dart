@@ -1,8 +1,8 @@
-library animate_sound_widget;
+library;
 
 import 'dart:math' show pi;
 import 'package:flutter/material.dart';
-import 'package:smartwin/common/constants/colors.dart';
+import 'package:sw/common/constants/colors.dart';
 part 'wave.dart';
 part "sound_controller.dart";
 

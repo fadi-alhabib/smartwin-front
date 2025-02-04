@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:smartwin/common/components/button_animated.dart';
-import 'package:smartwin/common/components/helpers.dart';
-import 'package:smartwin/common/components/text_field.dart';
+import 'package:sw/common/components/button_animated.dart';
+import 'package:sw/common/components/helpers.dart';
+import 'package:sw/common/components/text_field.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:images_picker/images_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
-import 'package:smartwin/common/constants/colors.dart';
+import 'package:sw/common/constants/colors.dart';
 
 class CreateStoreScreen extends HookWidget {
   CreateStoreScreen({super.key});
@@ -17,7 +17,7 @@ class CreateStoreScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var image = useState(<Media?>[]);
+    var image = useState<XFile?>(null);
     var storeNameController = useTextEditingController();
     var storeTypeController = useTextEditingController();
     var storeCountryController = useTextEditingController();
@@ -35,10 +35,12 @@ class CreateStoreScreen extends HookWidget {
               children: [
                 GestureDetector(
                   onTap: () async {
-                    await ImagesPicker.pick(count: 1, pickType: PickType.image)
-                        .then((value) {
-                      image.value = value!;
-                    });
+                    final ImagePicker picker = ImagePicker();
+                    final XFile? pickedFile =
+                        await picker.pickImage(source: ImageSource.gallery);
+                    if (pickedFile != null) {
+                      image.value = pickedFile;
+                    }
                   },
                   child: Container(
                     clipBehavior: Clip.antiAlias,
@@ -53,9 +55,9 @@ class CreateStoreScreen extends HookWidget {
                       ], begin: Alignment.topLeft, end: Alignment.bottomRight),
                       shape: BoxShape.circle,
                     ),
-                    child: image.value.isNotEmpty
+                    child: image.value != null
                         ? Image.file(
-                            File("${image.value.first?.path}"),
+                            File(image.value!.path),
                             fit: BoxFit.cover,
                           )
                         : Lottie.asset("images/store.json"),

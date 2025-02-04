@@ -1,13 +1,13 @@
 import 'package:another_transformer_page_view/another_transformer_page_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smartwin/features/stores/screens/my_store_screen.dart';
-import 'package:smartwin/features/stores/screens/products_screen.dart';
-import 'package:smartwin/features/stores/screens/store_home_screen.dart';
+import 'package:sw/features/stores/screens/my_store_screen.dart';
+import 'package:sw/features/stores/screens/products_screen.dart';
+import 'package:sw/features/stores/screens/store_home_screen.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:sliding_clipped_nav_bar/sliding_clipped_nav_bar.dart';
-import 'package:smartwin/common/constants/colors.dart';
+import 'package:sw/common/constants/colors.dart';
 
 import '../../../common/components/page_transformer.dart';
 

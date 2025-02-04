@@ -4,9 +4,9 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:smartwin/common/utils/dio_helper.dart';
-import 'package:smartwin/features/auth/models/user_model.dart';
-import 'package:smartwin/common/utils/cache_helper.dart';
+import 'package:sw/common/utils/dio_helper.dart';
+import 'package:sw/features/auth/models/user_model.dart';
+import 'package:sw/common/utils/cache_helper.dart';
 
 part 'auth_state.dart';
 

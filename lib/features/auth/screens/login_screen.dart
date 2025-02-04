@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:smartwin/common/components/button_animated.dart';
-import 'package:smartwin/common/components/logo.dart';
-import 'package:smartwin/common/components/text_field.dart';
-import 'package:smartwin/features/auth/screens/register_screen.dart';
+import 'package:sw/common/components/button_animated.dart';
+import 'package:sw/common/components/logo.dart';
+import 'package:sw/common/components/text_field.dart';
+import 'package:sw/features/auth/screens/register_screen.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:smartwin/features/auth/screens/otp_screen.dart';
-import 'package:smartwin/common/constants/colors.dart';
+import 'package:sw/features/auth/screens/otp_screen.dart';
+import 'package:sw/common/constants/colors.dart';
 
 import '../../../common/components/helpers.dart';
 

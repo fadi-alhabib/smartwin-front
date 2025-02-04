@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smartwin/common/utils/dio_helper.dart';
-import 'package:smartwin/features/stores/cubit/stores_states.dart';
-import 'package:smartwin/features/stores/models/all_stores_model.dart';
+import 'package:sw/common/utils/dio_helper.dart';
+import 'package:sw/features/stores/cubit/stores_states.dart';
+import 'package:sw/features/stores/models/all_stores_model.dart';
 
 class AllStoresCubit extends Cubit<AllStoresStates> {
   AllStoresCubit() : super(AllStoresInitial());

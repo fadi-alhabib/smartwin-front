@@ -1,20 +1,19 @@
-import 'dart:developer';
-
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:smartwin/common/utils/cache_helper.dart';
-import 'package:smartwin/features/c4/bloc/c4_bloc.dart';
-import 'package:smartwin/common/constants/constants.dart';
-import 'package:smartwin/features/auth/cubit/auth_cubit.dart';
-import 'package:smartwin/common/utils/dio_helper.dart';
-import 'package:smartwin/config/generated/l10n.dart';
-import 'package:smartwin/features/auth/screens/login_screen.dart';
-import 'package:smartwin/features/home/screens/main_screen.dart';
-import 'package:smartwin/features/auth/screens/register_screen.dart';
-import 'package:smartwin/features/c4/screens/room_screen.dart';
-import 'package:smartwin/features/stores/cubit/stores_cubit.dart';
+import 'package:sw/common/constants/constants.dart';
+import 'package:sw/common/utils/cache_helper.dart';
+import 'package:sw/common/utils/dio_helper.dart';
+import 'package:sw/config/generated/l10n.dart';
+import 'package:sw/features/auth/cubit/auth_cubit.dart';
+import 'package:sw/features/auth/screens/register_screen.dart';
+
+import 'package:sw/features/home/cubit/home_cubit.dart';
+import 'package:sw/features/home/screens/main_screen.dart';
+import 'package:sw/features/rooms/bloc/pusher_bloc.dart';
+import 'package:sw/features/rooms/cubit/room_cubit.dart';
+import 'package:sw/features/stores/cubit/stores_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,10 +37,15 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) {
           return AuthCubit();
         }),
-        BlocProvider(
-          create: (context) => C4Bloc(
-              "ws://192.168.1.105:8080/ws/c4/974c0039-e0d2-4c53-b6b4-adad8fd99aef/"),
-        ),
+        BlocProvider(create: (context) {
+          return HomeCubit();
+        }),
+        BlocProvider<PusherBloc>(create: (context) => PusherBloc()),
+        BlocProvider<RoomCubit>(create: (context) => RoomCubit()),
+        // BlocProvider(
+        //   create: (context) => C4Bloc(
+        //       "ws://192.168.1.105:8080/ws/c4/974c0039-e0d2-4c53-b6b4-adad8fd99aef/"),
+        // ),
       ],
       child: MaterialApp(
         theme: ThemeData(
@@ -62,7 +66,7 @@ class MyApp extends StatelessWidget {
         ],
         supportedLocales: S.delegate.supportedLocales,
         home: CacheHelper.getCache(key: 'token') != null
-            ? MainScreen()
+            ? const MainScreen()
             : const RegisterScreen(),
       ),
     );
