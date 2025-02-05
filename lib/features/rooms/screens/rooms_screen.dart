@@ -5,6 +5,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:sw/common/components/grid_view_builder.dart';
 import 'package:sw/common/constants/colors.dart';
 import 'package:sw/features/rooms/cubit/room_cubit.dart';
+import 'package:sw/features/rooms/screens/room_screen.dart';
 import 'package:sw/features/rooms/widgets/room_item.dart';
 
 class RoomsScreen extends HookWidget {
@@ -52,14 +53,22 @@ class RoomsScreen extends HookWidget {
                           columnCount: 2,
                           position: index,
                           child: ScaleAnimation(
-                              child: RoomItem(
-                            room: rooms[index],
+                              child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => RoomScreen(
+                                        roomId: rooms[index].id,
+                                      )));
+                            },
+                            child: RoomItem(
+                              room: rooms[index],
+                            ),
                           )));
                     },
                   );
                 } else if (state is RoomsError) {
                   return const Center(
-                    child: Text('SOmething Wrong happend'),
+                    child: Text('Something Wrong happend'),
                   );
                 } else {
                   return const SizedBox();

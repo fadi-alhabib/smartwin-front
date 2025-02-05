@@ -13,4 +13,8 @@ class CacheHelper {
   static dynamic getCache({required String key}) {
     return sharedPreferences?.get(key);
   }
+
+  static Future<bool?> clearCache() async {
+    return await sharedPreferences?.clear();
+  }
 }

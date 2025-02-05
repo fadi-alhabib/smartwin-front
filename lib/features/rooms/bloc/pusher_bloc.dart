@@ -26,6 +26,8 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
     on<QuizStarted>(handleQuizGameStarted);
     on<SubmitAnswer>(handleAnswer);
     on<QuizAnswerMade>(handleQuizAnswerMade);
+    on<EndQuizGame>(handleEndQuizGame);
+    on<NoAnswer>(handleNoAnswer);
   }
 
   Future<void> handlePusherConnect(PusherConnect event, Emitter emit) async {
@@ -33,6 +35,8 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
     await pusherService.initPusher(onPusherEvent, roomId: event.roomId);
   }
 
+  int? quizId;
+  int? roomId;
   void onPusherEvent(PusherEvent pusherEvent) {
     log("event came: ${pusherEvent.data}");
     log("event came: ${pusherEvent.eventName}");
@@ -50,7 +54,9 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
           final List<dynamic> dynamicQuestion = data['questions'];
           final List<QuestionModel> questions =
               dynamicQuestion.map((e) => QuestionModel.fromJson(e)).toList();
-          add(QuizStarted(questions: questions));
+          quizId = data['game_id'];
+          roomId = data['room_id'];
+          add(QuizStarted(questions: questions, quizId: data['game_id']));
           break;
         case r"answer.made":
           final data = jsonDecode(pusherEvent.data);
@@ -59,6 +65,10 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
               answerId: data['answerId'],
               isRightAnswer: data['isCorrect'] == 1 ? true : false));
           break;
+        case r"quiz.over":
+          final data = jsonDecode(pusherEvent.data);
+          add(EndQuizGame(
+              score: data['score'], minutesTaken: data['minutes_taken']));
         default:
           // Handle any other events here if needed
           break;
@@ -106,6 +116,7 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
   }
 
   Future<void> handleStartQuizGame(StartQuizGame event, Emitter emit) async {
+    _resetState();
     emit(StartQuizLoading());
     try {
       await DioHelper.getAuthData(
@@ -116,15 +127,15 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
 
       emit(StartQuizSuccess());
     } on DioException catch (e) {
-      log(e.toString());
+      log(e.response!.data.toString());
       emit(StartQuizError());
     }
   }
 
   GamesEnum? currentGame;
   List<QuestionModel>? questions;
-  // int currentQuestionIdx = 0;
   Future<void> handleQuizGameStarted(QuizStarted event, Emitter emit) async {
+    _resetState();
     currentGame = GamesEnum.quiz;
     questions = event.questions;
     emit(const GameStarted(game: GamesEnum.quiz));
@@ -135,6 +146,11 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
   int answersCount = 0;
   Future<void> handleQuizAnswerMade(QuizAnswerMade event, Emitter emit) async {
     answersCount += 1;
+    if (answersCount == 10) {
+      await DioHelper.postData(
+          path: "/room/$roomId/quiz/$quizId/end",
+          data: {"rightQuestionsCount": rightAnswersCount});
+    }
     if (event.isRightAnswer) {
       rightAnswersCount += 1;
     } else {
@@ -157,5 +173,38 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
       log(e.toString());
       emit(SubmitAnswerError());
     }
+  }
+
+  Future<void> handleEndQuizGame(EndQuizGame event, Emitter emit) async {
+    emit(QuizEndedState(score: event.score, minutesTaken: event.minutesTaken));
+  }
+
+  Future<void> handleNoAnswer(NoAnswer event, Emitter emit) async {
+    emit(SubmitAnswerLoading());
+    int wrongAnswerId = questions![0]
+        .answers!
+        .where((answer) => answer.isCorrect == false)
+        .toList()
+        .first
+        .id!;
+    try {
+      await DioHelper.postData(
+          path: '/room/$roomId/quiz/broadcast-answer',
+          data: {
+            'answerId': wrongAnswerId,
+          });
+      emit(SubmitAnswerSuccess());
+    } on DioException catch (e) {
+      log(e.toString());
+      emit(SubmitAnswerError());
+    }
+  }
+
+  void _resetState() {
+    rightAnswersCount = 0;
+    wrongAnswersCount = 0;
+    answersCount = 0;
+    currentGame = null;
+    questions = null;
   }
 }

@@ -3,9 +3,9 @@ import 'package:sw/common/constants/constants.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class AppDialog extends HookWidget {
-  AppDialog({super.key, required this.body, required this.actions});
-  List<Widget> body;
-  List<Widget> actions;
+  const AppDialog({super.key, required this.body, required this.actions});
+  final List<Widget> body;
+  final List<Widget> actions;
   @override
   Widget build(BuildContext context) {
     return Dialog(

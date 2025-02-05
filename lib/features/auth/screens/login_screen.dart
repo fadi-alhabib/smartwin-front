@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:sw/common/components/button_animated.dart';
 import 'package:sw/common/components/logo.dart';
 import 'package:sw/common/components/text_field.dart';
@@ -12,7 +11,7 @@ import '../../../common/components/helpers.dart';
 
 class LoginScreen extends HookWidget {
   LoginScreen({super.key});
-  var formkey = GlobalKey<FormState>();
+  final formkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {

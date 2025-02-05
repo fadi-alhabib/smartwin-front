@@ -7,7 +7,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:sw/features/auth/cubit/auth_cubit.dart';
 import 'package:sw/features/auth/screens/login_screen.dart';
-import 'package:sw/features/home/screens/main_screen.dart';
 import 'package:sw/features/auth/screens/otp_screen.dart';
 import 'package:sw/common/constants/colors.dart';
 

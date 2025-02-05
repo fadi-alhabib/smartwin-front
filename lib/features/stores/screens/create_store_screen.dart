@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:sw/common/components/button_animated.dart';
 import 'package:sw/common/components/helpers.dart';
 import 'package:sw/common/components/text_field.dart';

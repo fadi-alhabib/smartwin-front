@@ -4,17 +4,20 @@ class QuestionModel {
   int? id;
   String? title;
   List<AnswerModel>? answers;
-
-  QuestionModel({this.id, this.title, this.answers});
+  String? image;
+  QuestionModel({this.id, this.title, this.answers, this.image});
 
   QuestionModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
-    if (json['answers'] != null) {
+    image = json['image'];
+    List<dynamic>? answersJson = json['answers'];
+    if (answersJson != null) {
       answers = <AnswerModel>[];
-      json['answers'].forEach((v) {
+      answersJson.shuffle();
+      for (var v in answersJson) {
         answers!.add(AnswerModel.fromJson(v));
-      });
+      }
     }
   }
 
@@ -22,6 +25,7 @@ class QuestionModel {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['title'] = title;
+    data['image'] = image;
     if (answers != null) {
       data['answers'] = answers!.map((v) => v.toJson()).toList();
     }

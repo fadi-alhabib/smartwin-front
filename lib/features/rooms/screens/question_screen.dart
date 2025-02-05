@@ -41,8 +41,9 @@ class QuestionScreen extends HookWidget {
     ValueNotifier<int> currentQuestionIdx = useState<int>(0);
     final CountDownController countDownController =
         useMemoized(() => CountDownController());
+    final room = context.read<RoomCubit>().myRoom;
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
           color: Color.fromARGB(255, 47, 118, 175),
           borderRadius: BorderRadius.vertical(top: Radius.circular(35))),
       child: Padding(
@@ -84,7 +85,15 @@ class QuestionScreen extends HookWidget {
                             animationController.forward();
                           },
                           onChange: (value) {},
-                          duration: 30,
+                          onComplete: () => context.read<PusherBloc>().add(
+                              SubmitAnswer(
+                                  roomId: room!.id!,
+                                  answerId: questions[currentQuestionIdx.value]
+                                      .answers!
+                                      .firstWhere(
+                                          (ans) => ans.isCorrect == false)
+                                      .id!)),
+                          duration: 15,
                           fillColor: colorTween!,
                           ringColor: Colors.white);
                     }),
@@ -108,12 +117,28 @@ class QuestionScreen extends HookWidget {
                 ),
               ],
             ),
-            Text(
-              questions[currentQuestionIdx.value].title!,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 20),
+            Expanded(
+              child: Container(
+                width: getScreenSize(context).width,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  image: questions[currentQuestionIdx.value].image != null
+                      ? DecorationImage(
+                          fit: BoxFit.fill,
+                          image: NetworkImage(
+                              questions[currentQuestionIdx.value].image!))
+                      : null,
+                ),
+                child: Center(
+                  child: Text(
+                    questions[currentQuestionIdx.value].title!,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 20),
+                  ),
+                ),
+              ),
             ),
             SizedBox(
               height: getScreenSize(context).height / 2,
@@ -167,6 +192,7 @@ class AnswerItem extends HookWidget {
                   ? null
                   : () {
                       stateColor.value = AppColors.greyColor;
+                      countDownController.pause();
                       context.read<PusherBloc>().add(
                             SubmitAnswer(
                                 roomId: room!.id!, answerId: answer.id!),
@@ -179,7 +205,7 @@ class AnswerItem extends HookWidget {
                     stateColor.value = state.isCorrect
                         ? AppColors.greenColor
                         : AppColors.redColor;
-                    await Future.delayed(Duration(seconds: 2));
+                    await Future.delayed(Duration(seconds: 1));
                     countDownController.restart();
                     currentQuestionIdx.value += 1;
                     stateColor.value = AppColors.whiteColor;

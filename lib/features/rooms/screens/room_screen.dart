@@ -9,7 +9,8 @@ import 'package:sw/features/rooms/widgets/create_room_form.dart';
 import 'package:sw/features/rooms/widgets/room_view.dart';
 
 class RoomScreen extends HookWidget {
-  const RoomScreen({super.key});
+  const RoomScreen({super.key, this.roomId});
+  final int? roomId;
   @override
   Widget build(BuildContext context) {
     RoomModel? myRoom = context.watch<RoomCubit>().myRoom;
@@ -17,16 +18,35 @@ class RoomScreen extends HookWidget {
       if (myRoom != null) {
         context.read<PusherBloc>().add(PusherConnect(myRoom.id!));
         context.read<PusherBloc>().add(GetOldMessages(myRoom.id!));
-      } else {
-        context.read<RoomCubit>().getMyRoom();
       }
+
+      context.read<RoomCubit>().getMyRoom(id: roomId);
+
       return null;
-    }, [myRoom]);
+    }, []);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 30, 30, 36),
       appBar: AppBar(
-        title: const Text("اسم الغرفة"),
-        elevation: 0.0,
+        title: Text(myRoom?.name ?? "",
+            style: TextStyle(
+              color: AppColors.primaryColor,
+            )),
+        leading: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Icon(
+              Icons.timelapse,
+              color: AppColors.primaryColor,
+            ),
+            Text(
+              "${myRoom?.availableTime}",
+              style: TextStyle(
+                  color: AppColors.primaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
+            ),
+          ],
+        ),
       ),
       body: BlocBuilder<RoomCubit, RoomState>(
         builder: (context, state) {

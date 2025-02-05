@@ -4,7 +4,7 @@ import 'package:sw/common/constants/colors.dart';
 import 'helpers.dart';
 
 class AnimatedButton extends StatefulWidget {
-  AnimatedButton(
+  const AnimatedButton(
       {super.key,
       required this.scaleAnimation,
       required this.translateAnimation,
@@ -14,14 +14,14 @@ class AnimatedButton extends StatefulWidget {
       this.overlayColor,
       this.margin,
       this.padding});
-  bool scaleAnimation;
-  bool translateAnimation;
-  void Function()? onTap;
-  Gradient? gradient;
-  Color? overlayColor;
-  EdgeInsetsGeometry? margin;
-  EdgeInsetsGeometry? padding;
-  Widget child;
+  final bool scaleAnimation;
+  final bool translateAnimation;
+  final void Function()? onTap;
+  final Gradient? gradient;
+  final Color? overlayColor;
+  final EdgeInsetsGeometry? margin;
+  final EdgeInsetsGeometry? padding;
+  final Widget child;
 
   @override
   State<AnimatedButton> createState() => _AnimatedButtonState();
@@ -131,10 +131,10 @@ class _AnimatedButtonState extends State<AnimatedButton>
 }
 
 class TranslateAnimtion extends StatelessWidget {
-  TranslateAnimtion(
+  const TranslateAnimtion(
       {super.key, required this.translateController, required this.child});
-  AnimationController? translateController;
-  Widget child;
+  final AnimationController? translateController;
+  final Widget child;
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -150,10 +150,10 @@ class TranslateAnimtion extends StatelessWidget {
 }
 
 class ScaleAnimation extends StatelessWidget {
-  ScaleAnimation(
+  const ScaleAnimation(
       {super.key, required this.scaleController, required this.child});
-  AnimationController scaleController;
-  Widget child;
+  final AnimationController scaleController;
+  final Widget child;
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(

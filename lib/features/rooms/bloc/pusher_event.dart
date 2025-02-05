@@ -53,8 +53,12 @@ class StartQuizGame extends PusherBlocEvent {
 
 class QuizStarted extends PusherBlocEvent {
   final List<QuestionModel> questions;
+  final int quizId;
 
-  const QuizStarted({required this.questions});
+  const QuizStarted({
+    required this.questions,
+    required this.quizId,
+  });
   @override
   List<Object?> get props => [questions];
 }
@@ -62,7 +66,6 @@ class QuizStarted extends PusherBlocEvent {
 class QuizAnswerMade extends PusherBlocEvent {
   final int answerId;
   final bool isRightAnswer;
-
   const QuizAnswerMade({
     required this.answerId,
     required this.isRightAnswer,
@@ -85,3 +88,5 @@ class SubmitAnswer extends PusherBlocEvent {
 
   const SubmitAnswer({required this.roomId, required this.answerId});
 }
+
+class NoAnswer extends PusherBlocEvent {}

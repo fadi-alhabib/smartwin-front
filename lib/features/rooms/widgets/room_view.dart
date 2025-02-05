@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sw/common/constants/colors.dart';
 import 'package:sw/features/rooms/screens/question_screen.dart';
 import 'package:sw/features/rooms/bloc/pusher_bloc.dart';
@@ -24,6 +25,44 @@ class RoomPageView extends HookWidget {
             pageController.animateToPage(state.game.value,
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.bounceIn);
+          }
+          if (state is QuizEndedState) {
+            pageController.animateToPage(0,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.bounceIn);
+            state.minutesTaken;
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                backgroundColor: AppColors.backgroundColor,
+                shape: RoundedRectangleBorder(
+                    side: BorderSide(color: AppColors.primaryColor),
+                    borderRadius: BorderRadius.circular(29)),
+                content: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    if (state.score != 0)
+                      FittedBox(
+                        child: Text(
+                          state.score.toString(),
+                          style: TextStyle(
+                              color: state.score == 0
+                                  ? AppColors.redColor
+                                  : AppColors.primaryColor,
+                              fontSize: 46),
+                        ),
+                      ),
+                    if (state.score != 0)
+                      Lottie.asset(
+                        'images/animations/sparkles-1.json',
+                        repeat: true,
+                      ),
+                    if (state.score == 0)
+                      Lottie.asset('images/animations/game_over.json')
+                  ],
+                ),
+              ),
+            );
           }
         },
         child: PageView(
@@ -70,7 +109,13 @@ class RoomView extends HookWidget {
                 .add(StartQuizGame(roomId: roomId, isImagesGame: false));
           }),
       GameThumbnailModel(
-          image: images[2], title: 'Images Quiz', onPressed: () {}),
+          image: images[2],
+          title: 'Images Quiz',
+          onPressed: () {
+            context
+                .read<PusherBloc>()
+                .add(StartQuizGame(roomId: roomId, isImagesGame: true));
+          }),
     ];
 
     return Column(

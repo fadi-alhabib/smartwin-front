@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sw/common/components/app_dialog.dart';
 import 'package:sw/common/components/grid_view_builder.dart';
 import 'package:sw/features/stores/widgets/store_item_builder.dart';
 import 'package:sw/common/constants/constants.dart';
@@ -8,7 +7,6 @@ import 'package:sw/features/stores/cubit/stores_cubit.dart';
 import 'package:sw/features/stores/cubit/stores_states.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:gap/gap.dart';
 import 'package:sw/common/constants/colors.dart';
 
 class StoreProductsScreen extends HookWidget {

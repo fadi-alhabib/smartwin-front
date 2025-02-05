@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sw/common/components/helpers.dart';
 import 'package:sw/common/constants/colors.dart';
+import 'package:sw/common/utils/cache_helper.dart';
 import 'package:sw/features/auth/screens/register_screen.dart';
 import 'package:sw/features/stores/screens/store_main_screen.dart';
 
@@ -88,10 +89,11 @@ class MainScreenDrawer extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () => {
+          onTap: () async {
+            await CacheHelper.clearCache();
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const RegisterScreen()),
-                (route) => false)
+                (route) => false);
           },
           child: Card(
             elevation: 10,

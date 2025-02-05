@@ -27,17 +27,23 @@ class RoomCubit extends Cubit<RoomState> {
   }
 
   RoomModel? myRoom;
-  Future<void> getMyRoom() async {
+  Future<void> getMyRoom({int? id}) async {
+    print(id);
     emit(GetMyRoomLoading());
     try {
-      final response = await DioHelper.getAuthData(path: '/rooms/me');
+      late Response? response;
+      if (id != null) {
+        response = await DioHelper.getAuthData(path: '/rooms/$id');
+      } else {
+        response = await DioHelper.getAuthData(path: '/rooms/me');
+      }
       final room = RoomModel.fromJson(response!.data['data']);
       myRoom = room;
       log(room.toString());
       emit(GetMyRoomSuccess(room));
     } on DioException catch (e) {
       myRoom = null;
-      log(e.toString());
+      log(e.response!.data.toString());
       emit(GetMyRoomError(e.toString()));
     }
   }

@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter/widgets.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 // import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 
 class MyTextField extends FormField<String> {
+  final Widget? suffix;
+  final Widget? lable;
+  final TextInputType? keyboardType;
+  final String? hint;
+  final TextEditingController? controller;
+  final bool expands;
+  final Function()? onTap;
+  final void Function(String)? onChanged;
+  final bool? isSecure;
+  final EdgeInsetsGeometry? margin;
+  final EdgeInsetsGeometry? padding;
+
+  final Widget? prefix;
   MyTextField({
     super.key,
-    FormFieldValidator<String>? validator,
+    final FormFieldValidator<String>? validator,
     this.suffix,
     this.expands = false,
     this.lable,
@@ -81,17 +93,4 @@ class MyTextField extends FormField<String> {
                 ],
               );
             });
-  Widget? suffix;
-  Widget? lable;
-  TextInputType? keyboardType;
-  String? hint;
-  TextEditingController? controller;
-  bool expands;
-  Function()? onTap;
-  void Function(String)? onChanged;
-  bool? isSecure;
-  EdgeInsetsGeometry? margin;
-  EdgeInsetsGeometry? padding;
-
-  Widget? prefix;
 }

@@ -100,3 +100,10 @@ class SubmitAnswerLoading extends PusherState {}
 class SubmitAnswerSuccess extends PusherState {}
 
 class SubmitAnswerError extends PusherState {}
+
+class QuizEndedState extends PusherState {
+  final int score;
+  final int minutesTaken;
+
+  const QuizEndedState({required this.score, required this.minutesTaken});
+}

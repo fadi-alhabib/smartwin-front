@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:sw/common/components/button_animated.dart';
 import 'package:sw/features/c4/screens/welcome_screen/contant.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class WelcomeScreen extends StatelessWidget {
-  WelcomeScreen({
+class WelcomeScreen extends HookWidget {
+  const WelcomeScreen({
     super.key,
   });
-  var pageController =
-      PageController(initialPage: 0, viewportFraction: 1, keepPage: false);
-  var currentIndex = 0;
+
   @override
   Widget build(
     BuildContext context,
   ) {
+    ValueNotifier<int> currentIndex = useState<int>(0);
+    PageController pageController =
+        usePageController(initialPage: 0, viewportFraction: 1, keepPage: false);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -42,7 +44,7 @@ class WelcomeScreen extends StatelessWidget {
               itemCount: contents.length,
               controller: pageController,
               onPageChanged: (value) {
-                currentIndex = value;
+                currentIndex.value = value;
               },
               itemBuilder: (context, i) {
                 return Padding(
@@ -89,7 +91,7 @@ class WelcomeScreen extends StatelessWidget {
               translateAnimation: true,
               overlayColor: Colors.green,
               onTap: () {
-                pageController.animateToPage(currentIndex + 1,
+                pageController.animateToPage(currentIndex.value + 1,
                     duration: const Duration(seconds: 1),
                     curve: Curves.fastOutSlowIn);
               },
