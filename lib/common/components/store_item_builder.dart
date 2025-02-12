@@ -9,16 +9,17 @@ class StoreItemBuilder extends HookWidget {
       {super.key,
       required this.imageUrl,
       required this.title,
-      required this.country,
-      required this.description,
+      this.country = "",
+      this.description = "",
       this.rating,
       required this.rateWidget,
       required this.priceWidget,
+      this.onlineWidget = false,
+      this.isOnline,
       this.price})
-      : assert((rateWidget && priceWidget == false) ||
-            (priceWidget && rateWidget == false)),
-        assert(rateWidget ? rating != null : true),
-        assert(priceWidget ? price != null : true);
+      : assert(rateWidget ? rating != null : true),
+        assert(priceWidget ? price != null : true),
+        assert(onlineWidget ? isOnline != null : true);
   String imageUrl;
   String title;
   String country;
@@ -27,6 +28,8 @@ class StoreItemBuilder extends HookWidget {
   bool rateWidget;
   bool priceWidget;
   String? price;
+  bool onlineWidget;
+  bool? isOnline;
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, boxConstraints) {
@@ -114,12 +117,16 @@ class StoreItemBuilder extends HookWidget {
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                description,
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w500),
+                              Expanded(
+                                child: Text(
+                                  description,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500),
+                                ),
                               ),
                               Row(
                                 children: [
@@ -137,7 +144,21 @@ class StoreItemBuilder extends HookWidget {
                               ),
                             ],
                           )
-                        : const SizedBox(),
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                "$price ",
+                                style: const TextStyle(
+                                    fontSize: 14, color: Colors.white),
+                              ),
+                              CircleAvatar(
+                                radius: 7,
+                                backgroundColor:
+                                    isOnline! ? Colors.green : Colors.grey,
+                              )
+                            ],
+                          ),
                   )
                 ],
               ),

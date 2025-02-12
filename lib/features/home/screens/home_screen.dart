@@ -7,10 +7,10 @@ import 'package:sw/common/components/button_animated.dart';
 import 'package:sw/common/constants/colors.dart';
 import 'package:sw/features/rooms/screens/room_screen.dart';
 import 'package:sw/features/home/cubit/home_cubit.dart';
-import 'package:sw/features/stores/cubit/stores_cubit.dart';
-import 'package:sw/features/stores/screens/store_main_screen.dart';
 
 import '../../../common/components/helpers.dart';
+import '../../stores/all_stores/cubit/stores_cubit.dart';
+import '../../stores/store_main_screen.dart';
 
 class HomeScreen extends HookWidget {
   const HomeScreen({

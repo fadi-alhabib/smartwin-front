@@ -1,14 +1,16 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sw/common/components/grid_view_builder.dart';
-import 'package:sw/features/stores/widgets/store_item_builder.dart';
-import 'package:sw/common/constants/constants.dart';
-import 'package:sw/features/stores/cubit/stores_cubit.dart';
-import 'package:sw/features/stores/cubit/stores_states.dart';
-import 'package:sw/features/stores/screens/store_products_screen.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import '/common/components/grid_view_builder.dart';
+import '/common/components/store_item_builder.dart';
+import '/common/constants/constants.dart';
+
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+
+import 'cubit/stores_cubit.dart';
+import 'cubit/stores_states.dart';
+import 'store_screen.dart';
 
 class StoreHomeScreen extends HookWidget {
   const StoreHomeScreen({super.key});
@@ -47,12 +49,13 @@ class StoreHomeScreen extends HookWidget {
                   GridViewBuilder(
                       itemBuilder: (context, index) => GestureDetector(
                             onTap: () {
+                              AllStoresCubit()
+                                  .get(context)
+                                  .getStore(allStoresModel.stores[index].id);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => StoreProductsScreen(
-                                      index: index,
-                                    ),
+                                    builder: (context) => StoreScreen(),
                                   ));
                             },
                             child: AnimationConfiguration.staggeredGrid(
@@ -61,16 +64,15 @@ class StoreHomeScreen extends HookWidget {
                                 position: index,
                                 child: ScaleAnimation(
                                     child: StoreItemBuilder(
-                                  imageUrl: baseUrl +
-                                      allStoresModel.stores[index].image!,
+                                  imageUrl:
+                                      "https://i.ytimg.com/an_webp/9AmDta7HtmU/mqdefault_6s.webp?du=3000&sqp=CPz-o70G&rs=AOn4CLAdI3WOBOnBQ-cQE9lw_Tq50gGCzA",
                                   title: "${allStoresModel.stores[index].name}",
                                   country:
                                       "${allStoresModel.stores[index].country}",
                                   description:
                                       "${allStoresModel.stores[index].type}",
                                   rateWidget: true,
-                                  rating: allStoresModel.stores[index].rating!
-                                      .toDouble(),
+                                  rating: 3.toDouble(),
                                   priceWidget: false,
                                 ))),
                           ),

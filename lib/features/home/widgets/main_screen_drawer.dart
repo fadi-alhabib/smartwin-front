@@ -3,7 +3,8 @@ import 'package:sw/common/components/helpers.dart';
 import 'package:sw/common/constants/colors.dart';
 import 'package:sw/common/utils/cache_helper.dart';
 import 'package:sw/features/auth/screens/register_screen.dart';
-import 'package:sw/features/stores/screens/store_main_screen.dart';
+
+import '../../stores/store_main_screen.dart';
 
 class MainScreenDrawer extends StatelessWidget {
   const MainScreenDrawer({
