@@ -60,6 +60,7 @@ class RoomScreen extends HookWidget {
             return myRoom != null
                 ? RoomPageView(
                     roomId: myRoom.id!,
+                    room: myRoom,
                   )
                 : const CreateRoomScreen();
           }

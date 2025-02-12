@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:lottie/lottie.dart';
 import 'package:sw/common/constants/colors.dart';
+import 'package:sw/common/utils/cache_helper.dart';
+import 'package:sw/features/auth/models/user_model.dart';
+import 'package:sw/features/rooms/models/room_model.dart';
+import 'package:sw/features/rooms/screens/connect4_screen.dart';
 import 'package:sw/features/rooms/screens/question_screen.dart';
 import 'package:sw/features/rooms/bloc/pusher_bloc.dart';
 import 'package:sw/features/rooms/models/game_thumbnail_model.dart';
@@ -12,8 +17,10 @@ class RoomPageView extends HookWidget {
   const RoomPageView({
     super.key,
     required this.roomId,
+    required this.room,
   });
   final int roomId;
+  final RoomModel room;
 
   @override
   Widget build(BuildContext context) {
@@ -22,64 +29,40 @@ class RoomPageView extends HookWidget {
       body: BlocListener<PusherBloc, PusherState>(
         listener: (context, state) {
           if (state is GameStarted) {
-            pageController.animateToPage(state.game.value,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.bounceIn);
-          }
-          if (state is QuizEndedState) {
-            pageController.animateToPage(0,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.bounceIn);
-            state.minutesTaken;
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                backgroundColor: AppColors.backgroundColor,
-                shape: RoundedRectangleBorder(
-                    side: BorderSide(color: AppColors.primaryColor),
-                    borderRadius: BorderRadius.circular(29)),
-                content: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    if (state.score != 0)
-                      FittedBox(
-                        child: Text(
-                          state.score.toString(),
-                          style: TextStyle(
-                              color: state.score == 0
-                                  ? AppColors.redColor
-                                  : AppColors.primaryColor,
-                              fontSize: 46),
-                        ),
-                      ),
-                    if (state.score != 0)
-                      Lottie.asset(
-                        'images/animations/sparkles-1.json',
-                        repeat: true,
-                      ),
-                    if (state.score == 0)
-                      Lottie.asset('images/animations/game_over.json')
-                  ],
-                ),
-              ),
+            // Assume that GamesEnum.connect4 corresponds to page 1.
+            pageController.animateToPage(
+              state.game.value,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.bounceIn,
             );
           }
+          if (state is C4GameStartedState) {
+            pageController.animateToPage(
+              2,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.bounceIn,
+            );
+          }
+          // ... existing listener code for quiz/game end etc.
         },
         child: PageView(
           controller: pageController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            // First Page: Existing RoomView
+            // First Page: Room view.
             RoomView(roomId: roomId),
 
-            // Second Page: Placeholder for another page
+            // Second Page: Quiz Screen.
             const QuestionScreen(),
 
-            // Third Page: Placeholder for another page
-            const Center(child: Text('Page 3')),
-
-            // Fourth Page: Placeholder for another page
-            const Center(child: Text('Page 4')),
+            // Third Page: Connect 4 game screen.
+            C4GameScreen(
+              roomId: roomId,
+              isHost: room.hostId ==
+                  UserModel.fromJson(
+                          jsonDecode(CacheHelper.getCache(key: "user")))
+                      .id,
+            ),
           ],
         ),
       ),
@@ -99,23 +82,34 @@ class RoomView extends HookWidget {
     final isChatFull = useState<bool>(false);
     List<GameThumbnailModel> thumbnails = [
       GameThumbnailModel(
-          image: images[0], title: 'Connect 4', onPressed: () {}),
+        image: images[0],
+        title: 'Connect 4',
+        onPressed: () {
+          // Dispatch the event to start a Connect 4 game.
+          // Replace '2' with the actual challenged user id as needed.
+          context.read<PusherBloc>().add(
+                StartC4Game(roomId: roomId, challengedId: 2),
+              );
+        },
+      ),
       GameThumbnailModel(
-          image: images[1],
-          title: 'Quiz',
-          onPressed: () {
-            context
-                .read<PusherBloc>()
-                .add(StartQuizGame(roomId: roomId, isImagesGame: false));
-          }),
+        image: images[1],
+        title: 'Quiz',
+        onPressed: () {
+          context
+              .read<PusherBloc>()
+              .add(StartQuizGame(roomId: roomId, isImagesGame: false));
+        },
+      ),
       GameThumbnailModel(
-          image: images[2],
-          title: 'Images Quiz',
-          onPressed: () {
-            context
-                .read<PusherBloc>()
-                .add(StartQuizGame(roomId: roomId, isImagesGame: true));
-          }),
+        image: images[2],
+        title: 'Images Quiz',
+        onPressed: () {
+          context
+              .read<PusherBloc>()
+              .add(StartQuizGame(roomId: roomId, isImagesGame: true));
+        },
+      ),
     ];
 
     return Column(
@@ -145,32 +139,36 @@ class RoomView extends HookWidget {
             ),
           ),
         Expanded(
-            flex: 2,
-            child: Stack(
-              children: [
-                const RoomChat(),
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(
-                          side: BorderSide(
-                              color: AppColors.primaryColor, width: 2)),
-                      backgroundColor: AppColors.backgroundColor,
+          flex: 2,
+          child: Stack(
+            children: [
+              const RoomChat(),
+              Align(
+                alignment: Alignment.topCenter,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(
+                      side: BorderSide(
+                        color: AppColors.primaryColor,
+                        width: 2,
+                      ),
                     ),
-                    onPressed: () {
-                      isChatFull.value = !isChatFull.value;
-                    },
-                    child: Icon(
-                      isChatFull.value
-                          ? Icons.arrow_drop_down
-                          : Icons.arrow_drop_up,
-                      color: AppColors.primaryColor,
-                    ),
+                    backgroundColor: AppColors.backgroundColor,
+                  ),
+                  onPressed: () {
+                    isChatFull.value = !isChatFull.value;
+                  },
+                  child: Icon(
+                    isChatFull.value
+                        ? Icons.arrow_drop_down
+                        : Icons.arrow_drop_up,
+                    color: AppColors.primaryColor,
                   ),
                 ),
-              ],
-            )),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -192,7 +190,7 @@ class GameCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PusherBloc, PusherState>(
       builder: (context, state) {
-        if (state is StartQuizLoading) {
+        if (state is StartQuizLoading || state is C4GameStartLoading) {
           return const Center(
             child: CircularProgressIndicator(
               color: AppColors.primaryColor,

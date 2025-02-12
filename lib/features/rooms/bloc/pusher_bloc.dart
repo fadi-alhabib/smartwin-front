@@ -15,9 +15,28 @@ import 'package:sw/features/rooms/models/room_model.dart';
 part 'pusher_event.dart';
 part 'pusher_state.dart';
 
+/// This BLoC now handles not only quiz and messaging events but also Connect Four game events.
+/// All game data (like the current board, game id, etc.) is stored as instance variables.
 class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
   late PusherService pusherService;
+
+  // -------------------------------
+  // Connect Four (C4) game variables
+  // -------------------------------
+  int? c4GameId;
+  List<List<int>> boardC4 = List.generate(6, (_) => List.filled(7, 0));
+  int? c4CurrentTurn;
+  int? c4ChallengerId;
+
+  // -------------------------------
+  // (Existing quiz & messaging variables)
+  // -------------------------------
+  int? quizId;
+  int? roomId;
+  List<MessageModel> messages = [];
+
   PusherBloc() : super(PusherInitial()) {
+    // Existing events
     on<PusherConnect>(handlePusherConnect);
     on<PusherReceiveMessage>(handleReciveMessage);
     on<GetOldMessages>(handleGetOldMessages);
@@ -28,6 +47,14 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
     on<QuizAnswerMade>(handleQuizAnswerMade);
     on<EndQuizGame>(handleEndQuizGame);
     on<NoAnswer>(handleNoAnswer);
+
+    // -------------------------------
+    // New events for Connect Four game
+    // -------------------------------
+    on<StartC4Game>(handleStartC4Game);
+    on<C4GameStarted>(handleC4GameStarted);
+    on<MakeC4Move>(handleMakeC4Move);
+    on<C4MoveMade>(handleC4MoveMade);
   }
 
   Future<void> handlePusherConnect(PusherConnect event, Emitter emit) async {
@@ -35,16 +62,16 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
     await pusherService.initPusher(onPusherEvent, roomId: event.roomId);
   }
 
-  int? quizId;
-  int? roomId;
+  /// Called whenever a pusher event is received.
+  /// We now add cases for the C4 events “c4.started” and “move.made.”
   void onPusherEvent(PusherEvent pusherEvent) {
-    log("event came: ${pusherEvent.data}");
-    log("event came: ${pusherEvent.eventName}");
+    log("Event received: ${pusherEvent.eventName} with data: ${pusherEvent.data}");
     try {
-      log(pusherEvent.eventName.toString());
       switch (pusherEvent.eventName) {
+        // ---------------------------
+        // Existing events (messaging, quiz)
+        // ---------------------------
         case r"message.sent":
-          log("event ${pusherEvent.data}");
           final data = jsonDecode(pusherEvent.data);
           final message = MessageModel.fromJson(data);
           add(PusherReceiveMessage(message));
@@ -60,7 +87,6 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
           break;
         case r"answer.made":
           final data = jsonDecode(pusherEvent.data);
-          print(data);
           add(QuizAnswerMade(
               answerId: data['answerId'],
               isRightAnswer: data['isCorrect'] == 1 ? true : false));
@@ -69,18 +95,53 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
           final data = jsonDecode(pusherEvent.data);
           add(EndQuizGame(
               score: data['score'], minutesTaken: data['minutes_taken']));
+          break;
+
+        // ---------------------------
+        // New Connect Four events
+        // ---------------------------
+        case r"c4.started":
+          {
+            final data = jsonDecode(pusherEvent.data);
+            c4GameId = data['game_id'];
+            c4ChallengerId = data['challenger_id'];
+            c4CurrentTurn = data['current_turn'];
+            // Initialize an empty board (6 rows x 7 columns)
+            boardC4 = List.generate(6, (_) => List.filled(7, 0));
+            add(C4GameStarted(
+                gameId: c4GameId!,
+                challengerId: c4ChallengerId!,
+                currentTurn: c4CurrentTurn!,
+                board: boardC4));
+          }
+          break;
+        case r"move.made":
+          {
+            final data = jsonDecode(pusherEvent.data);
+            // Convert the dynamic board list to a List<List<int>>
+            boardC4 = (data['board'] as List)
+                .map<List<int>>((row) => List<int>.from(row))
+                .toList();
+            c4CurrentTurn = data['current_turn'];
+            String message = data['message'];
+            add(C4MoveMade(
+                board: boardC4, currentTurn: c4CurrentTurn, message: message));
+          }
+          break;
         default:
-          // Handle any other events here if needed
+          // (Other events can be handled here if needed.)
           break;
       }
     } catch (e) {
-      log(e.toString());
+      log("Error processing pusher event: ${e.toString()}");
     }
   }
 
-  List<MessageModel> messages = [];
+  // ---------------------------
+  // Existing message and quiz handlers...
+  // ---------------------------
   Future<void> handleGetOldMessages(GetOldMessages event, Emitter emit) async {
-    log("Iam here");
+    log("Fetching old messages...");
     emit(GetOldMessagesLoading());
     try {
       final response =
@@ -105,9 +166,7 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
     try {
       final response = await DioHelper.postData(
           path: '/messages/rooms/${event.roomId}',
-          data: {
-            "message": event.message,
-          });
+          data: {"message": event.message});
       final newMessage = MessageModel.fromJson(response!.data['data']);
       emit(SendMessageSuccess(message: newMessage));
     } catch (e) {
@@ -121,10 +180,7 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
     try {
       await DioHelper.getAuthData(
           path: '/room/${event.roomId}/quiz/start',
-          queryParameters: {
-            'is_images_game': event.isImagesGame,
-          });
-
+          queryParameters: {'is_images_game': event.isImagesGame});
       emit(StartQuizSuccess());
     } on DioException catch (e) {
       log(e.response!.data.toString());
@@ -165,9 +221,7 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
     try {
       await DioHelper.postData(
           path: '/room/${event.roomId}/quiz/broadcast-answer',
-          data: {
-            'answerId': event.answerId,
-          });
+          data: {'answerId': event.answerId});
       emit(SubmitAnswerSuccess());
     } on DioException catch (e) {
       log(e.toString());
@@ -190,14 +244,65 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
     try {
       await DioHelper.postData(
           path: '/room/$roomId/quiz/broadcast-answer',
-          data: {
-            'answerId': wrongAnswerId,
-          });
+          data: {'answerId': wrongAnswerId});
       emit(SubmitAnswerSuccess());
     } on DioException catch (e) {
       log(e.toString());
       emit(SubmitAnswerError());
     }
+  }
+
+  // ---------------------------
+  // New handlers for Connect Four game
+  // ---------------------------
+
+  /// Handles the event when the user initiates starting a Connect Four game.
+  /// This calls the backend endpoint `/room/{room}/c4/start` with the ID of the challenged player.
+  Future<void> handleStartC4Game(StartC4Game event, Emitter emit) async {
+    // Reset any previous Connect Four game state.
+    c4GameId = null;
+    boardC4 = List.generate(6, (_) => List.filled(7, 0));
+    c4CurrentTurn = null;
+    c4ChallengerId = null;
+    emit(C4GameStartLoading());
+    try {
+      await DioHelper.postData(
+          path: '/room/${event.roomId}/c4/start',
+          data: {'challenged_id': event.challengedId});
+      // The backend will trigger the pusher event “c4.started” to update our local data.
+      emit(C4GameStartSuccess());
+    } on DioException catch (e) {
+      log(e.toString());
+      emit(C4GameStartError(error: e.toString()));
+    }
+  }
+
+  /// Handles the event when a move is initiated.
+  /// This calls the endpoint `/room/{room}/c4/{game}/make-move` with the selected column.
+  Future<void> handleMakeC4Move(MakeC4Move event, Emitter emit) async {
+    emit(C4MoveLoading());
+    try {
+      await DioHelper.postData(
+          path: '/room/${event.roomId}/c4/${event.gameId}/make-move',
+          data: {'column': event.column});
+      // The backend will trigger a pusher event “move.made” to update the board.
+      emit(C4MoveSuccess());
+    } on DioException catch (e) {
+      log(e.response!.data.toString());
+      emit(C4MoveError(error: "ليس دورك"));
+    }
+  }
+
+  /// Called when the pusher event “c4.started” is received.
+  /// The instance variables have already been updated.
+  Future<void> handleC4GameStarted(C4GameStarted event, Emitter emit) async {
+    emit(C4GameStartedState());
+  }
+
+  /// Called when the pusher event “move.made” is received.
+  /// The updated board and message are now available.
+  Future<void> handleC4MoveMade(C4MoveMade event, Emitter emit) async {
+    emit(C4MoveMadeState(message: event.message));
   }
 
   void _resetState() {

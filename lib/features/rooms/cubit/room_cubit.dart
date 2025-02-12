@@ -28,7 +28,6 @@ class RoomCubit extends Cubit<RoomState> {
 
   RoomModel? myRoom;
   Future<void> getMyRoom({int? id}) async {
-    print(id);
     emit(GetMyRoomLoading());
     try {
       late Response? response;
@@ -36,6 +35,7 @@ class RoomCubit extends Cubit<RoomState> {
         response = await DioHelper.getAuthData(path: '/rooms/$id');
       } else {
         response = await DioHelper.getAuthData(path: '/rooms/me');
+        print(response!.data);
       }
       final room = RoomModel.fromJson(response!.data['data']);
       myRoom = room;

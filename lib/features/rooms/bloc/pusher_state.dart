@@ -107,3 +107,34 @@ class QuizEndedState extends PusherState {
 
   const QuizEndedState({required this.score, required this.minutesTaken});
 }
+
+class C4GameStartLoading extends PusherState {}
+
+class C4GameStartSuccess extends PusherState {}
+
+class C4GameStartError extends PusherState {
+  final String error;
+  const C4GameStartError({required this.error});
+  @override
+  List<Object> get props => [error];
+}
+
+class C4GameStartedState extends PusherState {}
+
+class C4MoveLoading extends PusherState {}
+
+class C4MoveSuccess extends PusherState {}
+
+class C4MoveError extends PusherState {
+  final String error;
+  const C4MoveError({required this.error});
+  @override
+  List<Object> get props => [error];
+}
+
+class C4MoveMadeState extends PusherState {
+  final String message;
+  const C4MoveMadeState({required this.message});
+  @override
+  List<Object> get props => [message];
+}

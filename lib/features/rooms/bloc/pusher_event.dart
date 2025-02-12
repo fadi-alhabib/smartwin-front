@@ -90,3 +90,44 @@ class SubmitAnswer extends PusherBlocEvent {
 }
 
 class NoAnswer extends PusherBlocEvent {}
+
+class StartC4Game extends PusherBlocEvent {
+  final int roomId;
+  final int challengedId;
+  const StartC4Game({required this.roomId, required this.challengedId});
+}
+
+class C4GameStarted extends PusherBlocEvent {
+  final int gameId;
+  final int challengerId;
+  final int currentTurn;
+  final List<List<int>> board;
+  const C4GameStarted({
+    required this.gameId,
+    required this.challengerId,
+    required this.currentTurn,
+    required this.board,
+  });
+}
+
+class MakeC4Move extends PusherBlocEvent {
+  final int roomId;
+  final int gameId;
+  final int column;
+  const MakeC4Move({
+    required this.roomId,
+    required this.gameId,
+    required this.column,
+  });
+}
+
+class C4MoveMade extends PusherBlocEvent {
+  final List<List<int>> board;
+  final int? currentTurn;
+  final String message;
+  const C4MoveMade({
+    required this.board,
+    required this.currentTurn,
+    required this.message,
+  });
+}
