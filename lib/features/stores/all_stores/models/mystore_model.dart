@@ -1,14 +1,14 @@
-class AllStoresModel {
-  List<Stores> stores = [];
+class UeserStoreModle {
+  Store? store;
 
-  AllStoresModel.fromJson(Map<String, dynamic> json) {
-    json["stores"].forEach((element) {
-      stores.add(Stores.fromJson(element));
-    });
+  UeserStoreModle({this.store});
+
+  UeserStoreModle.fromJson(Map<String, dynamic> json) {
+    store = Store.fromJson(json["data"]);
   }
 }
 
-class Stores {
+class Store {
   int? id;
   String? name;
   String? type;
@@ -25,7 +25,7 @@ class Stores {
   int? ratingsCount;
   List<Products> products = [];
 
-  Stores.fromJson(Map<String, dynamic> json) {
+  Store.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     type = json['type'];
@@ -40,6 +40,7 @@ class Stores {
     image = json['image'];
     rating = json['rating'];
     ratingsCount = json['ratings_count'];
+
     json["products"].forEach((element) {
       products.add(Products.fromJson(element));
     });

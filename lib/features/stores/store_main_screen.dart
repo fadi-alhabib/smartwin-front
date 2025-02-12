@@ -1,15 +1,14 @@
 import 'package:another_transformer_page_view/another_transformer_page_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sw/features/stores/screens/my_store_screen.dart';
-import 'package:sw/features/stores/screens/products_screen.dart';
-import 'package:sw/features/stores/screens/store_home_screen.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:sliding_clipped_nav_bar/sliding_clipped_nav_bar.dart';
-import 'package:sw/common/constants/colors.dart';
+import 'package:sw/features/stores/my_store/my_store_profile/my_store_screen.dart';
 
-import '../../../common/components/page_transformer.dart';
+import '../../common/components/page_transformer.dart';
+import 'all_stores/store_home_screen.dart';
+import 'products/products_screen.dart';
 
 class StoreMainScreen extends HookWidget {
   StoreMainScreen({super.key});
@@ -25,14 +24,13 @@ class StoreMainScreen extends HookWidget {
     var currentindex = useState(0);
 
     return Scaffold(
-        backgroundColor: const Color.fromARGB(255, 36, 36, 42),
         appBar: AppBar(
-          foregroundColor: AppColors.primaryColor,
           centerTitle: false,
           title: const Text(
             "Smart win",
             style: TextStyle(
-                color: AppColors.primaryColor, fontStyle: FontStyle.italic),
+                color: Color.fromARGB(255, 255, 210, 63),
+                fontStyle: FontStyle.italic),
           ),
           actions: const [
             Padding(
@@ -50,7 +48,7 @@ class StoreMainScreen extends HookWidget {
                     Text(
                       "2",
                       style: TextStyle(
-                        color: AppColors.primaryColor,
+                        color: Color.fromARGB(255, 255, 210, 63),
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                       ),
@@ -75,20 +73,20 @@ class StoreMainScreen extends HookWidget {
               BarItem(
                 title: currentindex.value == 0 ? "المتاجر" : "",
                 icon: Icons.store_sharp,
-                inactiveColor: AppColors.primaryColor,
-                activeColor: AppColors.primaryColor,
+                inactiveColor: const Color.fromARGB(255, 255, 210, 63),
+                activeColor: const Color.fromARGB(255, 255, 210, 63),
               ),
               BarItem(
                 title: currentindex.value == 1 ? "المنتجات" : "",
                 icon: CupertinoIcons.cart,
-                inactiveColor: AppColors.primaryColor,
-                activeColor: AppColors.primaryColor,
+                inactiveColor: const Color.fromARGB(255, 255, 210, 63),
+                activeColor: const Color.fromARGB(255, 255, 210, 63),
               ),
               BarItem(
                 title: currentindex.value == 2 ? "متجري" : "",
                 icon: Icons.person,
-                inactiveColor: AppColors.primaryColor,
-                activeColor: AppColors.primaryColor,
+                inactiveColor: const Color.fromARGB(255, 255, 210, 63),
+                activeColor: const Color.fromARGB(255, 255, 210, 63),
               ),
             ],
             onButtonPressed: (index) {

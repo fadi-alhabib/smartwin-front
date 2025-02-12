@@ -13,7 +13,8 @@ import 'package:sw/features/home/cubit/home_cubit.dart';
 import 'package:sw/features/home/screens/main_screen.dart';
 import 'package:sw/features/rooms/bloc/pusher_bloc.dart';
 import 'package:sw/features/rooms/cubit/room_cubit.dart';
-import 'package:sw/features/stores/cubit/stores_cubit.dart';
+
+import 'features/stores/all_stores/cubit/stores_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +32,10 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) {
-            return AllStoresCubit();
+            return AllStoresCubit()
+              ..getAllStores()
+              ..getAllProducts()
+              ..getUserStore();
           },
         ),
         BlocProvider(create: (context) {
@@ -65,6 +69,16 @@ class MyApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: S.delegate.supportedLocales,
+        onGenerateRoute: (settings) {
+          // if (settings.name == "store_screen") {
+          //   return MaterialPageRoute(
+          //     builder: (context) => StoreScreen(
+          //       index: 0,
+          //     ),
+          //   );
+          // }
+          // return null;
+        },
         home: CacheHelper.getCache(key: 'token') != null
             ? const MainScreen()
             : const RegisterScreen(),
