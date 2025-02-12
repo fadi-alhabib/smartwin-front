@@ -159,9 +159,10 @@ class ProfileScreen extends StatelessWidget {
                   Center(
                     child: GestureDetector(
                       onTap: () {
-                        AllStoresCubit().get(context).getAllStores();
-                        AllStoresCubit().get(context).getAllProducts();
-                        AllStoresCubit().get(context).getUserStore();
+                        // TODO::
+                        // AllStoresCubit().get(context).getAllStores();
+                        // AllStoresCubit().get(context).getAllProducts();
+                        // AllStoresCubit().get(context).getUserStore();
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => StoreMainScreen(),
                         ));

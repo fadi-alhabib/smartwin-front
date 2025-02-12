@@ -130,7 +130,6 @@ class HomeScreen extends HookWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    AllStoresCubit().get(context).getAllStores();
                     Navigator.push(
                         context,
                         MaterialPageRoute(

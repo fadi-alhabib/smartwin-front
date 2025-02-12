@@ -17,10 +17,15 @@ import 'cubit/stores_cubit.dart';
 import 'cubit/stores_states.dart';
 
 class StoreScreen extends HookWidget {
-  StoreScreen({super.key});
+  final int id;
+  const StoreScreen(this.id, {super.key});
 
   @override
   Widget build(BuildContext context) {
+    useEffect(() {
+      context.read<AllStoresCubit>().getStore(id);
+      return null;
+    }, const []);
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 36, 36, 42),
         appBar: AppBar(

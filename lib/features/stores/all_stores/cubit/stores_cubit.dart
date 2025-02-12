@@ -15,15 +15,34 @@ class AllStoresCubit extends Cubit<AllStoresStates> {
   AllStoresCubit() : super(AllStoresInitial());
   AllStoresCubit get(context) => BlocProvider.of(context);
 
-  AllStoresModel? allStoresModel;
-  getAllStores() {
+  List<Stores>? allStoresModel;
+  int currentPage = 1; // Keep track of the current page.
+  bool isLoading = false; // Prevent multiple calls at the same time.
+
+  void getAllStores() {
+    if (isLoading) return; // Avoid multiple API calls.
+    isLoading = true;
     emit(AllStoresLoadingState());
-    DioHelper.getData(path: "stores/").then((value) {
-      allStoresModel = AllStoresModel.fromJson(value?.data);
+
+    DioHelper.getData(path: "stores/", queryParameters: {
+      'page': currentPage.toString(), // Send current page as a parameter.
+      'per_page': '8', // Limit results per page (you can make this dynamic).
+    }).then((value) {
+      List<dynamic> jsonStores = value!.data['data'];
+      List<Stores> stores =
+          jsonStores.map((stor) => Stores.fromJson(stor)).toList();
+      if (allStoresModel == null) {
+        allStoresModel = stores;
+      } else {
+        allStoresModel!.addAll(stores);
+      }
+      print(value.data);
       emit(AllStoresSuccessState());
+      currentPage++; // Increase the page number for the next call.
     }).catchError((error) {
-      print(error.toString());
       emit(AllStoresErrorState());
+    }).whenComplete(() {
+      isLoading = false; // Reset the loading flag after the request completes.
     });
   }
 
@@ -40,14 +59,33 @@ class AllStoresCubit extends Cubit<AllStoresStates> {
   }
 
   AllProductsModel? allProductsModel;
-  getAllProducts() {
+
+  int currentProductPage = 1;
+
+  void getAllProducts({bool loadMore = false}) {
+    if (!loadMore) {
+      currentProductPage =
+          1; // Reset the page when it's not a "load more" request.
+    }
+
     emit(AllStoresLoadingState());
-    DioHelper.getData(path: "products/").then((value) {
-      allProductsModel = AllProductsModel.fromJson(value?.data["data"]);
-      emit(AllProductsSuccessState());
+
+    DioHelper.getData(
+      path: 'products/',
+      queryParameters: {'page': currentProductPage, 'per_page': 8},
+    ).then((value) {
+      var newProducts = AllProductsModel.fromJson(value?.data);
+      if (loadMore) {
+        allProductsModel?.products
+            .addAll(newProducts.products); // Append new products
+      } else {
+        allProductsModel = newProducts; // Replace with the fresh list
+      }
+      emit(AllStoresSuccessState());
+      currentProductPage++; // Increment the page for the next request
     }).catchError((error) {
-      print(error.toString());
-      emit(AllProductsErroeState());
+      throw error;
+      emit(AllStoresErrorState());
     });
   }
 

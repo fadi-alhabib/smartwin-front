@@ -32,10 +32,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) {
-            return AllStoresCubit()
-              ..getAllStores()
-              ..getAllProducts()
-              ..getUserStore();
+            return AllStoresCubit();
           },
         ),
         BlocProvider(create: (context) {
@@ -70,6 +67,8 @@ class MyApp extends StatelessWidget {
         ],
         supportedLocales: S.delegate.supportedLocales,
         onGenerateRoute: (settings) {
+          return null;
+
           // if (settings.name == "store_screen") {
           //   return MaterialPageRoute(
           //     builder: (context) => StoreScreen(

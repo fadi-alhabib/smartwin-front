@@ -1,38 +1,39 @@
 class AllProductsModel {
-  List<Products> products = [];
+  List<Product> products = [];
 
-  AllProductsModel.fromJson(List<dynamic> json) {
-    json.forEach((element) {
-      products.add(Products.fromJson(element));
-    });
+  AllProductsModel.fromJson(Map<String, dynamic> json) {
+    if (json['data'] != null) {
+      json['data'].forEach((element) {
+        products.add(Product.fromJson(element));
+      });
+    }
   }
 }
 
-class Products {
+class Product {
   int? id;
   String? name;
   String? description;
   String? price;
-  String? image;
-  int? storeId;
-  String? createdAt;
-  String? updatedAt;
-  int? rating;
-  int? ratingsCount;
-  Store? store;
+  Store? store; // Store type
+  List<ImageModel> images = [];
 
-  Products.fromJson(Map<String, dynamic> json) {
+  Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     description = json['description'];
     price = json['price'];
-    image = json['image'];
-    storeId = json['store_id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    rating = json['rating'];
-    ratingsCount = json['ratings_count'];
-    store = Store.fromJson(json['store']);
+
+    // Ensure store is a Map before trying to parse it
+    if (json['store'] != null && json['store'] is Map<String, dynamic>) {
+      store = Store.fromJson(json['store']);
+    }
+
+    if (json['images'] != null) {
+      json['images'].forEach((image) {
+        images.add(ImageModel.fromJson(image));
+      });
+    }
   }
 }
 
@@ -43,14 +44,9 @@ class Store {
   String? country;
   String? address;
   String? phone;
-  int? points;
-  int? isActive;
-  int? userId;
-  String? createdAt;
-  String? updatedAt;
+  String? owner;
   String? image;
-  int? rating;
-  int? ratingsCount;
+  List<Product> products = [];
 
   Store.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -59,13 +55,19 @@ class Store {
     country = json['country'];
     address = json['address'];
     phone = json['phone'];
-    points = json['points'];
-    isActive = json['is_active'];
-    userId = json['user_id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    owner = json['owner'];
     image = json['image'];
-    rating = json['rating'];
-    ratingsCount = json['ratings_count'];
+
+    // If the store has products, you can parse them as well, if needed.
+  }
+}
+
+class ImageModel {
+  int? id;
+  String? image;
+
+  ImageModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    image = json['image'];
   }
 }
