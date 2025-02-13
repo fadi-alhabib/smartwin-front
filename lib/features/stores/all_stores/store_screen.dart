@@ -59,7 +59,7 @@ class StoreScreen extends HookWidget {
                           Center(
                             child: CircleAvatar(
                               backgroundImage:
-                                  NetworkImage(baseUrl + model!.store!.image!),
+                                  NetworkImage(model!.store!.image!),
                               radius: 80,
                             ),
                           ),
@@ -311,9 +311,11 @@ class StoreScreen extends HookWidget {
                                                   ));
                                             },
                                             child: StoreItemBuilder(
-                                              imageUrl: baseUrl +
-                                                  model.store!.products[index]
-                                                      .images![0],
+                                              imageUrl: model
+                                                  .store!
+                                                  .products[index]
+                                                  .images![0]
+                                                  .image!,
                                               title:
                                                   "${model.store?.products[index].name}",
                                               country: "",

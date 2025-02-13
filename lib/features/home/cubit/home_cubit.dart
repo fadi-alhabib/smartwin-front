@@ -18,8 +18,10 @@ class HomeCubit extends Cubit<HomeState> {
       log(response!.data.toString());
       emit(HomeDataSuccess(HomeDataModel.fromJson(response.data['data'])));
     } on DioException catch (e) {
-      log(e.toString());
+      log(e.response!.data.toString());
       emit(HomeDataError(e.response!.data.toString()));
+    } catch (e) {
+      log(e.toString());
     }
   }
 }

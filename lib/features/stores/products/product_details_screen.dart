@@ -45,10 +45,9 @@ class ProductDetailsScreen extends HookWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CarouselSlider(
-                      items: product?.images
-                          .map((e) => Image.network(baseUrl + e))
-                          .toList()
-                        ?..add(Image.network(baseUrl + "${product?.image}")),
+                      items:
+                          product?.images.map((e) => Image.network(e)).toList()
+                            ?..add(Image.network("${product?.image}")),
                       options: CarouselOptions(
                         autoPlay: product!.images.isNotEmpty,
                         viewportFraction: 1.0,
@@ -63,7 +62,7 @@ class ProductDetailsScreen extends HookWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "${product?.name}",
+                              "${product.name}",
                               style: const TextStyle(
                                   fontSize: 25,
                                   color: Colors.white,
@@ -72,7 +71,7 @@ class ProductDetailsScreen extends HookWidget {
                             Row(
                               children: [
                                 Text(
-                                  "${product?.price}",
+                                  "${product.price}",
                                   style: const TextStyle(
                                       fontSize: 18,
                                       color: Colors.white,
@@ -97,7 +96,7 @@ class ProductDetailsScreen extends HookWidget {
                               fontWeight: FontWeight.w400),
                         ),
                         Text(
-                          "${product?.description}",
+                          "${product.description}",
                           style: const TextStyle(
                               fontSize: 15,
                               color: Colors.white,
@@ -135,7 +134,7 @@ class ProductDetailsScreen extends HookWidget {
                                           Duration(milliseconds: 1500),
                                       onValueChanged: (value) {
                                         rating(
-                                            id: product?.id,
+                                            id: product.id,
                                             rating: value.round());
 
                                         rate.value = value;

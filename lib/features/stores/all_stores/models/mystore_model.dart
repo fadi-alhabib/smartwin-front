@@ -52,27 +52,64 @@ class Products {
   String? name;
   String? description;
   String? price;
-  List<String>? images;
-  int? storeId;
-  String? createdAt;
-  String? updatedAt;
-  int? rating;
-  int? ratingsCount;
+  List<Images>? images;
+  Null averageRating;
+  bool? userHasRated;
+
+  Products(
+      {this.id,
+      this.name,
+      this.description,
+      this.price,
+      this.images,
+      this.averageRating,
+      this.userHasRated});
 
   Products.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     description = json['description'];
     price = json['price'];
-    json['images'] != null
-        ? json['images'].forEach((element) {
-            images?.add(element['image']);
-          })
-        : [];
-    storeId = json['store_id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    rating = json['rating'];
-    ratingsCount = json['ratings_count'];
+    if (json['images'] != null) {
+      images = <Images>[];
+      json['images'].forEach((v) {
+        images!.add(Images.fromJson(v));
+      });
+    }
+    averageRating = json['average_rating'];
+    userHasRated = json['user_has_rated'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['description'] = description;
+    data['price'] = price;
+    if (images != null) {
+      data['images'] = images!.map((v) => v.toJson()).toList();
+    }
+    data['average_rating'] = averageRating;
+    data['user_has_rated'] = userHasRated;
+    return data;
+  }
+}
+
+class Images {
+  int? id;
+  String? image;
+
+  Images({this.id, this.image});
+
+  Images.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    image = json['image'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['image'] = image;
+    return data;
   }
 }

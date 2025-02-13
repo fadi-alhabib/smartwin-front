@@ -25,6 +25,7 @@ class MyStoreScreen extends HookWidget {
   Widget build(BuildContext context) {
     useEffect(() {
       AllStoresCubit().get(context).getUserStore();
+      return null;
     }, []);
     return BlocConsumer<AllStoresCubit, AllStoresStates>(
       listener: (context, state) {},
@@ -112,8 +113,7 @@ class MyStoreScreen extends HookWidget {
                       alignment: Alignment.bottomRight,
                       children: [
                         CircleAvatar(
-                          backgroundImage:
-                              NetworkImage("${baseUrl + image.toString()}"),
+                          backgroundImage: NetworkImage(image.toString()),
                           radius: 80,
                         ),
                         const CircleAvatar(
@@ -358,8 +358,8 @@ class MyStoreScreen extends HookWidget {
                                               ));
                                         },
                                         child: StoreItemBuilder(
-                                          imageUrl: baseUrl +
-                                              products[index].images![0],
+                                          imageUrl:
+                                              products[index].images![0].image!,
                                           title: products[index].name!,
                                           country: "",
                                           description: "",

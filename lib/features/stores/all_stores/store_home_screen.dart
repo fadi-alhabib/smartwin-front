@@ -60,7 +60,7 @@ class StoreHomeScreen extends HookWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                // Use GridView.builder inside ListView
+
                 GridView.builder(
                   itemCount: allStoresModel!.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
