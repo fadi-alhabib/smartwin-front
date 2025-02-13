@@ -313,7 +313,7 @@ class StoreScreen extends HookWidget {
                                             child: StoreItemBuilder(
                                               imageUrl: baseUrl +
                                                   model.store!.products[index]
-                                                      .image!,
+                                                      .images![0],
                                               title:
                                                   "${model.store?.products[index].name}",
                                               country: "",

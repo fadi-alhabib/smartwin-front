@@ -93,13 +93,13 @@ class AllStoresCubit extends Cubit<AllStoresStates> {
   bool noStore = false;
   getUserStore() {
     emit(UserStoreLodingState());
-    DioHelper.getData(path: "stores/mine").then((value) {
+    DioHelper.getAuthData(path: "stores/me").then((value) {
       ueserStoreModle = UeserStoreModle.fromJson(value?.data);
       emit(UserStoreSuccessState());
     }).catchError((error) {
       print(error.toString());
-      noStore = error.response.statusCode == 400;
-      emit(UserStoreErroeState(error.response.statusCode));
+      noStore = error.response.statusCode == 404;
+      emit(UserStoreErroeState(noStore));
     });
   }
 

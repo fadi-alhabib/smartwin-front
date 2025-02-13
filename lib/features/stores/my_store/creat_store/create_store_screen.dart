@@ -151,7 +151,7 @@ class CreateStoreScreen extends HookWidget {
                         },
                         controller: storeCountryController,
                         validator: (value) {
-                          if (value!.isEmpty) {
+                          if (storeCountryController.text.isEmpty) {
                             return " يجب تحديد البلد";
                           }
                           return null;

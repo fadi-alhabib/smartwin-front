@@ -16,22 +16,20 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       {required String name,
       required String description,
       required String price,
-      required dynamic image,
       required List<MultipartFile> images}) {
     emit(CreateProductLoadingState());
     DioHelper.postData(
-        path: "product/create",
+        path: "products",
         data: FormData.fromMap({
           "name": name,
           "description": description,
           "price": price,
-          "image": image,
           "images[]": images
         })).then((value) {
       print(value?.data);
       emit(CreateProductSuccessState());
     }).catchError((error) {
-      print(error.toString());
+      print(error.response.data);
       emit(CreateProductFailureState());
     });
   }
