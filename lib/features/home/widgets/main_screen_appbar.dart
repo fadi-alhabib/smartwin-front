@@ -28,7 +28,7 @@ class MainScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
                   if (state is HomeDataSuccess &&
                       state.data.availableTime != null) {
                     return Text(
-                      state.data.availableTime!,
+                      state.data.availableTime!.toString(),
                       style: const TextStyle(
                         color: Color.fromARGB(255, 223, 41, 53),
                         fontSize: 18,

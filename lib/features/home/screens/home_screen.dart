@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:sw/common/components/app_dialog.dart';
 import 'package:sw/common/components/button_animated.dart';
 import 'package:sw/common/constants/colors.dart';
+import 'package:sw/features/home/widgets/purchase_time_dialog.dart';
 import 'package:sw/features/rooms/screens/room_screen.dart';
 import 'package:sw/features/home/cubit/home_cubit.dart';
 
@@ -113,14 +114,26 @@ class HomeScreen extends HookWidget {
                         color: Colors.white,
                       )),
                       subtitle: const Text(""),
-                      trailing: Text(
-                        "${state.data.points}/1000",
-                        style: TextStyle(
-                            color: state.data.points!.toInt() == 1000
-                                ? AppColors.greenColor
-                                : state.data.points!.toInt() >= 500
-                                    ? AppColors.primaryColor
-                                    : AppColors.redColor),
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            "${state.data.points}/1000",
+                            style: TextStyle(
+                                color: state.data.points!.toInt() == 1000
+                                    ? AppColors.greenColor
+                                    : state.data.points!.toInt() >= 500
+                                        ? AppColors.primaryColor
+                                        : AppColors.redColor,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "${state.data.points! / 10}\$",
+                            style: TextStyle(
+                                color: AppColors.greenColor,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -173,6 +186,16 @@ class HomeScreen extends HookWidget {
                   child: AnimatedButton(
                       onTap: () {
                         // TODO:: NAVIGATE TO MY ROOM SCREEN
+                        if (state.data.availableTime == 0) {
+                          showDialog(
+                            context: context,
+                            builder: (context) =>
+                                PurchaseTimeDialog(roomId: state.data.roomId!),
+                          ).then(
+                              (_) => context.read<HomeCubit>().getHomeData());
+
+                          return;
+                        }
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => const RoomScreen()));
                       },

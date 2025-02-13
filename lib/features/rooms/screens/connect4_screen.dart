@@ -1,25 +1,30 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sw/common/constants/colors.dart';
+import 'package:sw/common/utils/cache_helper.dart';
+import 'package:sw/features/auth/models/user_model.dart';
 import 'package:sw/features/rooms/bloc/pusher_bloc.dart';
+import 'package:sw/features/rooms/cubit/room_cubit.dart';
 
 /// A screen for the Connect Four game.
 /// [roomId] is required to make API calls.
 /// If [isHost] is true, a [challengedId] must be provided so the host
 /// can initiate the game.
-/// If [isSpectator] is true, the user can only view the game and can't make moves.
+/// Spectator status is determined internally and prevents making moves.
 class C4GameScreen extends StatefulWidget {
   final int roomId;
   final bool isHost;
   final int? challengedId;
-  final bool isSpectator; // New argument to indicate if the user is a spectator
+  final PageController pageController;
 
   const C4GameScreen({
     super.key,
     required this.roomId,
     required this.isHost,
     this.challengedId,
-    this.isSpectator = false, // Default to false
+    required this.pageController,
   });
 
   @override
@@ -46,11 +51,12 @@ class _C4GameScreenState extends State<C4GameScreen> {
 
   /// Build a widget for the Connect Four board.
   /// The board is assumed to be a 6x7 grid (6 rows, 7 columns).
-  Widget _buildBoard(PusherBloc bloc, List<List<int>> board, int? currentTurn) {
+  Widget _buildBoard(PusherBloc bloc, List<List<int>> board, int? currentTurn,
+      bool isSpectator) {
     return AspectRatio(
       aspectRatio: 7 / 6,
       child: Container(
-        margin: EdgeInsets.all(10),
+        margin: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [AppColors.primaryColor, AppColors.backgroundColor],
@@ -84,11 +90,11 @@ class _C4GameScreenState extends State<C4GameScreen> {
                       onTap: () {
                         // Allow a move only if a game is active, the user is not a spectator,
                         // and we're not already processing a move.
-                        if (!widget.isSpectator &&
+                        if (!isSpectator &&
                             bloc.c4GameId != null &&
                             currentTurn != null &&
                             !_isLoadingMove) {
-                          // Start loading state before dispatching move
+                          // Start loading state before dispatching move.
                           setState(() {
                             _isLoadingMove = true;
                           });
@@ -114,20 +120,22 @@ class _C4GameScreenState extends State<C4GameScreen> {
                                   color: Colors.black.withOpacity(0.2),
                                   spreadRadius: 2,
                                   blurRadius: 5,
-                                  offset: Offset(0, 2),
+                                  offset: const Offset(0, 2),
                                 ),
                               ],
                               border: Border.all(
-                                  color: Colors.black.withOpacity(0.3)),
+                                color: Colors.black.withOpacity(0.3),
+                              ),
                             ),
                           ),
-                          // Display loading indicator in the center of the cell when move is being processed
+                          // Display loading indicator in the center of the cell when a move is being processed.
                           if (_isLoadingMove)
                             Center(
                               child: CircularProgressIndicator(
                                 strokeWidth: 4,
                                 valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.white.withOpacity(0.7)),
+                                  Colors.white.withOpacity(0.7),
+                                ),
                               ),
                             ),
                         ],
@@ -158,10 +166,9 @@ class _C4GameScreenState extends State<C4GameScreen> {
               SnackBar(content: Text('Error making move: ${state.error}')),
             );
           } else if (state is C4MoveMadeState) {
-            // After a move is made, we stop the loading indicator
+            // After a move is made, stop the loading indicator.
             setState(() {
-              _isLoadingMove =
-                  false; // Stop loading after the move is completed
+              _isLoadingMove = false;
             });
 
             // Optionally display a message after a move is made.
@@ -175,6 +182,13 @@ class _C4GameScreenState extends State<C4GameScreen> {
           final bloc = context.watch<PusherBloc>();
           final board = bloc.boardC4;
           final currentTurn = bloc.c4CurrentTurn;
+
+          // Determine spectator status.
+          final UserModel user = UserModel.fromJson(
+            jsonDecode(CacheHelper.getCache(key: 'user')),
+          );
+          final bool isSpectator = bloc.c4ChallengerId == user.id ||
+              context.read<RoomCubit>().myRoom!.hostId == user.id;
 
           return Column(
             children: [
@@ -204,7 +218,7 @@ class _C4GameScreenState extends State<C4GameScreen> {
                       currentTurn != null
                           ? 'Current Turn: Player $currentTurn'
                           : 'Waiting for game to start...',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -215,7 +229,8 @@ class _C4GameScreenState extends State<C4GameScreen> {
               ),
               const SizedBox(height: 16.0),
               // Build the game board.
-              Expanded(child: _buildBoard(bloc, board, currentTurn)),
+              Expanded(
+                  child: _buildBoard(bloc, board, currentTurn, isSpectator)),
               const SizedBox(height: 16.0),
               // If the user is not the host and the game hasn’t started, show a waiting message.
               if (!widget.isHost && bloc.c4GameId == null)
@@ -231,8 +246,8 @@ class _C4GameScreenState extends State<C4GameScreen> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-              // Display a message for spectators
-              if (widget.isSpectator)
+              // Display a message for spectators.
+              if (isSpectator)
                 const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(

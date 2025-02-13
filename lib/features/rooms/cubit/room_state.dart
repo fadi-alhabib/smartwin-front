@@ -66,3 +66,12 @@ class RoomError extends RoomState {
   @override
   List<Object> get props => [message];
 }
+
+class TimePurchaseLoading extends RoomState {}
+
+class TimePurchaseSuccess extends RoomState {}
+
+class TimePurchaseError extends RoomState {
+  final String error;
+  const TimePurchaseError(this.error);
+}

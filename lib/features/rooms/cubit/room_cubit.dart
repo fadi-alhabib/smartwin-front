@@ -82,4 +82,43 @@ class RoomCubit extends Cubit<RoomState> {
       emit(const RoomError('حدث خطأ غير متوقع'));
     }
   }
+
+  Future<void> purchaseTime({
+    required int roomId,
+    required int minutes,
+    required int price,
+  }) async {
+    emit(TimePurchaseLoading());
+    try {
+      final response = await DioHelper.postData(
+        path: '/rooms/$roomId/time-purchase',
+        data: {
+          'minutes': minutes,
+          'price': price,
+        },
+      );
+
+      if (response!.statusCode == 200) {
+        // Successful purchase
+        emit(TimePurchaseSuccess());
+      } else {
+        // Try to extract the error message from the API response
+        final error = (response.data is Map<String, dynamic>)
+            ? response.data['error']
+            : null;
+        emit(TimePurchaseError(error ?? 'Unknown error occurred'));
+      }
+    } on DioException catch (e) {
+      // Handle Dio exceptions: try to get the error message from the response data
+      String errorMessage = 'An error occurred';
+      if (e.response != null && e.response?.data is Map) {
+        errorMessage = e.response?.data['error'] ?? errorMessage;
+      } else {
+        errorMessage = e.message!;
+      }
+      emit(TimePurchaseError(errorMessage));
+    } catch (e) {
+      emit(TimePurchaseError(e.toString()));
+    }
+  }
 }

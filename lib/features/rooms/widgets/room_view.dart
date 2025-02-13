@@ -62,6 +62,7 @@ class RoomPageView extends HookWidget {
                   UserModel.fromJson(
                           jsonDecode(CacheHelper.getCache(key: "user")))
                       .id,
+              pageController: pageController,
             ),
           ],
         ),
