@@ -139,13 +139,11 @@ class CreateProductScreen extends HookWidget {
                             onTap: () async {
                               if (formKey.currentState!.validate()) {
                                 CreateProductCubit().get(context).createProduct(
-                                    image: await MultipartFile.fromFile(
-                                        images.value.first.path),
                                     name: productNameController.text,
                                     description:
                                         productDescriptionController.text,
                                     price: productPriceController.text,
-                                    images: imagesFiles..removeAt(0));
+                                    images: imagesFiles);
                                 print(imagesFiles.length);
                               }
                             },

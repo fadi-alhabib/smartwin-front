@@ -19,8 +19,8 @@ class UserStoreLodingState extends AllStoresStates {}
 class UserStoreSuccessState extends AllStoresStates {}
 
 class UserStoreErroeState extends AllStoresStates {
-  UserStoreErroeState(this.statusCode);
-  int statusCode;
+  UserStoreErroeState(this.noStore);
+  bool noStore;
 }
 
 class GetStoreLoadingState extends AllStoresStates {}

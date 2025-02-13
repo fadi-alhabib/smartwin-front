@@ -52,7 +52,7 @@ class Products {
   String? name;
   String? description;
   String? price;
-  String? image;
+  List<String>? images;
   int? storeId;
   String? createdAt;
   String? updatedAt;
@@ -64,7 +64,11 @@ class Products {
     name = json['name'];
     description = json['description'];
     price = json['price'];
-    image = json['image'];
+    json['images'] != null
+        ? json['images'].forEach((element) {
+            images?.add(element['image']);
+          })
+        : [];
     storeId = json['store_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

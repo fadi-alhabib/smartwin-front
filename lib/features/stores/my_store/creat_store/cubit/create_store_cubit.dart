@@ -22,7 +22,7 @@ class CreateStoreCubit extends Cubit<CreateStoreState> {
       required File image}) async {
     emit(CreateStoreLoadingState());
     DioHelper.postData(
-        path: "store/create",
+        path: "stores/",
         data: FormData.fromMap({
           "name": name,
           "type": type,
@@ -34,7 +34,7 @@ class CreateStoreCubit extends Cubit<CreateStoreState> {
       print(value?.data);
       emit(CreateStoreSuccessState());
     }).catchError((error) {
-      print(error.toString());
+      print(error.response.data);
       emit(CreateStoreErrorState());
     });
   }
