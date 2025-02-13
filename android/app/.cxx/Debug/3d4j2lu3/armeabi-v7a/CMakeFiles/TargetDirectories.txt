@@ -1,0 +1,2 @@
+/home/jesusisking/dev/projects/smartwin/prod/front/sw/android/app/.cxx/Debug/3d4j2lu3/armeabi-v7a/CMakeFiles/edit_cache.dir
+/home/jesusisking/dev/projects/smartwin/prod/front/sw/android/app/.cxx/Debug/3d4j2lu3/armeabi-v7a/CMakeFiles/rebuild_cache.dir
