@@ -91,6 +91,7 @@ class AllStoresCubit extends Cubit<AllStoresStates> {
   UeserStoreModle? ueserStoreModle;
   bool noStore = false;
   getUserStore() {
+    ueserStoreModle = null;
     emit(UserStoreLodingState());
     DioHelper.getAuthData(path: "stores/me").then((value) {
       ueserStoreModle = UeserStoreModle.fromJson(value?.data);

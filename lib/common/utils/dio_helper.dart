@@ -47,4 +47,18 @@ class DioHelper {
           ...?headers,
         }));
   }
+
+  static Future<Response?> patchData({
+    required String path,
+    dynamic data,
+    Map<String, String>? headers,
+  }) async {
+    return await dio?.patch(path,
+        data: data,
+        options: Options(headers: {
+          "Authorization": 'Bearer ${CacheHelper.getCache(key: 'token')}',
+          'Accept': 'application/json',
+          ...?headers,
+        }));
+  }
 }

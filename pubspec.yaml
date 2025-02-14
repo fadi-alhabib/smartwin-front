@@ -64,7 +64,11 @@ dependencies:
   go_router: ^14.6.2
   pusher_channels_flutter: ^2.5.0
   pin_code_fields: ^8.0.1
+<<<<<<< HEAD
   google_sign_in: ^6.2.2
+=======
+  app_links: ^6.3.3
+>>>>>>> 3ddf3e3880b1b0cd0a7e9f871171a0d032a057c2
 
 dev_dependencies:
   flutter_test:

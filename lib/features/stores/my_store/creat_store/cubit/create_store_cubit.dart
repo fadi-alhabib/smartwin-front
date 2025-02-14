@@ -37,4 +37,41 @@ class CreateStoreCubit extends Cubit<CreateStoreState> {
       emit(CreateStoreErrorState());
     });
   }
+
+  updateStore(
+      {String? name,
+      String? type,
+      String? country,
+      String? address,
+      String? phone,
+      required String id,
+      File? image}) async {
+    emit(UpdateStoreLoadingState());
+
+    DioHelper.patchData(
+            path: "stores/$id",
+            data: FormData.fromMap(image != null
+                ? {
+                    "name": name,
+                    "type": type,
+                    "country": country,
+                    "address": address,
+                    "phone": phone,
+                    "image": await MultipartFile.fromFile(image.path),
+                  }
+                : {
+                    "name": name,
+                    "type": type,
+                    "country": country,
+                    "address": address,
+                    "phone": phone,
+                  }))
+        .then((value) {
+      print(value?.requestOptions.data.fields);
+      emit(UpdateStoreSuccessState());
+    }).catchError((error) {
+      print(error.response.data);
+      emit(UpdateStoreErrorState());
+    });
+  }
 }

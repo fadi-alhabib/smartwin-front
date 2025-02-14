@@ -145,7 +145,7 @@ class MyStoreScreen extends HookWidget {
                             child: Row(
                               children: [
                                 Text(
-                                  "$address",
+                                  "${model?.store?.country}",
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
@@ -283,30 +283,43 @@ class MyStoreScreen extends HookWidget {
                       const SizedBox(
                         height: 20,
                       ),
-                      // const Divider(color: Colors.white),
-                      // Row(
-                      //   children: [
-                      //     const CircleAvatar(
-                      //       radius: 17,
-                      //       backgroundColor: Color.fromARGB(255, 68, 68, 65),
-                      //       child: Icon(
-                      //         Icons.edit,
-                      //         color: Colors.blue,
-                      //         size: 18,
-                      //       ),
-                      //     ),
-                      //     TextButton(
-                      //       onPressed: () {},
-                      //       child: const Text(
-                      //         "تعديل معلومات المتجر",
-                      //         style: TextStyle(
-                      //           color: Colors.blue,
-                      //           fontWeight: FontWeight.w500,
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
+                      const Divider(color: Colors.white),
+                      Row(
+                        children: [
+                          const CircleAvatar(
+                            radius: 17,
+                            backgroundColor: Color.fromARGB(255, 68, 68, 65),
+                            child: Icon(
+                              Icons.edit,
+                              color: Colors.blue,
+                              size: 18,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => CreateStoreScreen(
+                                  update: true,
+                                  name: name,
+                                  address: address,
+                                  type: type,
+                                  phone: model?.store?.phone,
+                                  networkImage: image,
+                                  id: "${model?.store?.id}",
+                                  country: model?.store?.country,
+                                ),
+                              ));
+                            },
+                            child: const Text(
+                              "تعديل معلومات المتجر",
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
