@@ -10,3 +10,9 @@ class CreateStoreLoadingState extends CreateStoreState {}
 class CreateStoreSuccessState extends CreateStoreState {}
 
 class CreateStoreErrorState extends CreateStoreState {}
+
+class UpdateStoreLoadingState extends CreateStoreState {}
+
+class UpdateStoreSuccessState extends CreateStoreState {}
+
+class UpdateStoreErrorState extends CreateStoreState {}

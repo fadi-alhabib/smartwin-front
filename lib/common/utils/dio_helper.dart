@@ -8,7 +8,7 @@ class DioHelper {
   static init() {
     dio = Dio(
       BaseOptions(
-        baseUrl: "https://e477-185-107-56-71.ngrok-free.app/api/",
+        baseUrl: "https://e93a-185-107-56-46.ngrok-free.app/api/",
         headers: {"Accept": "application/json"},
       ),
     );
@@ -40,6 +40,20 @@ class DioHelper {
     Map<String, String>? headers,
   }) async {
     return await dio?.post(path,
+        data: data,
+        options: Options(headers: {
+          "Authorization": 'Bearer ${CacheHelper.getCache(key: 'token')}',
+          'Accept': 'application/json',
+          ...?headers,
+        }));
+  }
+
+  static Future<Response?> patchData({
+    required String path,
+    dynamic data,
+    Map<String, String>? headers,
+  }) async {
+    return await dio?.patch(path,
         data: data,
         options: Options(headers: {
           "Authorization": 'Bearer ${CacheHelper.getCache(key: 'token')}',

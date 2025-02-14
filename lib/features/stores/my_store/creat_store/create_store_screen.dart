@@ -15,17 +15,33 @@ import '../../all_stores/cubit/stores_cubit.dart';
 import 'cubit/create_store_cubit.dart';
 
 class CreateStoreScreen extends HookWidget {
-  CreateStoreScreen({super.key});
+  CreateStoreScreen(
+      {super.key,
+      this.name = "",
+      this.address = "",
+      this.country = "",
+      this.phone = "",
+      this.type = "",
+      this.networkImage,
+      this.id,
+      this.update = false});
   var formKey = GlobalKey<FormState>();
-
+  String? name;
+  String? type;
+  String? country;
+  String? address;
+  String? phone;
+  String? networkImage;
+  bool update;
+  String? id;
   @override
   Widget build(BuildContext context) {
     var image = useState<XFile?>(null);
-    var storeNameController = useTextEditingController();
-    var storeTypeController = useTextEditingController();
-    var storeCountryController = useTextEditingController();
-    var storeAddressController = useTextEditingController();
-    var storePhoneController = useTextEditingController();
+    var storeNameController = useTextEditingController(text: name);
+    var storeTypeController = useTextEditingController(text: type);
+    var storeCountryController = useTextEditingController(text: country);
+    var storeAddressController = useTextEditingController(text: address);
+    var storePhoneController = useTextEditingController(text: phone);
 
     return BlocProvider(
       create: (context) => CreateStoreCubit(),
@@ -39,6 +55,10 @@ class CreateStoreScreen extends HookWidget {
               content: Text("حصل خطأ حاول مرة اخرى"),
               backgroundColor: Colors.red,
             ));
+          }
+          if (state is UpdateStoreSuccessState) {
+            AllStoresCubit().get(context).getUserStore();
+            Navigator.of(context).pop();
           }
         },
         builder: (context, state) {
@@ -63,7 +83,7 @@ class CreateStoreScreen extends HookWidget {
                         initialValue: "",
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return "يجب إضافة صورة";
+                            return update ? null : "يجب إضافة صورة";
                           }
                         },
                         builder: (field) => Column(
@@ -93,12 +113,14 @@ class CreateStoreScreen extends HookWidget {
                                       end: Alignment.bottomRight),
                                   shape: BoxShape.circle,
                                 ),
-                                child: image.value != null
-                                    ? Image.file(
-                                        File("${image.value?.path}"),
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Lottie.asset("images/store.json"),
+                                child: update
+                                    ? Image.network(networkImage.toString())
+                                    : image.value != null
+                                        ? Image.file(
+                                            File("${image.value?.path}"),
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Lottie.asset("images/store.json"),
                               ),
                             ),
                             field.hasError
@@ -184,27 +206,42 @@ class CreateStoreScreen extends HookWidget {
                       const SizedBox(
                         height: 20,
                       ),
-                      state is CreateStoreLoadingState
+                      state is CreateStoreLoadingState ||
+                              state is UpdateStoreLoadingState
                           ? const CircularProgressIndicator(
                               color: Color.fromARGB(255, 255, 193, 10),
                             )
                           : AnimatedButton(
                               onTap: () {
                                 if (formKey.currentState!.validate()) {
-                                  CreateStoreCubit().get(context).createStore(
-                                      name: storeNameController.text,
-                                      type: storeTypeController.text,
-                                      country: storeCountryController.text,
-                                      address: storeAddressController.text,
-                                      phone: storePhoneController.text,
-                                      image: File(image.value!.path));
+                                  if (update) {
+                                    CreateStoreCubit().get(context).updateStore(
+                                        name: storeNameController.text,
+                                        type: storeTypeController.text,
+                                        id: id!,
+                                        country: storeCountryController.text,
+                                        address: storeAddressController.text,
+                                        phone: storePhoneController.text,
+                                        image: image.value != null
+                                            ? File("${image.value?.path}")
+                                            : null);
+                                  } else {
+                                    CreateStoreCubit().get(context).createStore(
+                                        name: storeNameController.text,
+                                        type: storeTypeController.text,
+                                        country: storeCountryController.text,
+                                        address: storeAddressController.text,
+                                        phone: storePhoneController.text,
+                                        image: File(image.value!.path));
+                                  }
                                 }
                               },
                               scaleAnimation: false,
                               translateAnimation: true,
                               child: SizedBox(
                                 width: getScreenSize(context).width / 2,
-                                child: const Center(child: Text("إنشاء")),
+                                child: Center(
+                                    child: Text(update ? "تعديل" : "إنشاء")),
                               ))
                     ],
                   ),
