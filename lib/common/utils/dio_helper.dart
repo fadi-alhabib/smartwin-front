@@ -8,7 +8,7 @@ class DioHelper {
   static init() {
     dio = Dio(
       BaseOptions(
-        baseUrl: "https://e477-185-107-56-71.ngrok-free.app/api/",
+        baseUrl: "https://e93a-185-107-56-46.ngrok-free.app/api/",
         headers: {"Accept": "application/json"},
       ),
     );

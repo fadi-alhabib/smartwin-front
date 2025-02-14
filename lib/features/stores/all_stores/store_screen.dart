@@ -6,12 +6,10 @@ import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:gap/gap.dart';
-import 'package:sw/features/stores/all_stores/models/all_stores_model.dart';
 
 import '../../../common/components/app_dialog.dart';
 import '../../../common/components/grid_view_builder.dart';
 import '../../../common/components/store_item_builder.dart';
-import '../../../common/constants/constants.dart';
 import '../products/product_details_screen.dart';
 import 'cubit/stores_cubit.dart';
 import 'cubit/stores_states.dart';

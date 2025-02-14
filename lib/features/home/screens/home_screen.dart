@@ -6,11 +6,11 @@ import 'package:sw/common/components/app_dialog.dart';
 import 'package:sw/common/components/button_animated.dart';
 import 'package:sw/common/constants/colors.dart';
 import 'package:sw/features/home/widgets/purchase_time_dialog.dart';
+import 'package:sw/features/home/widgets/transfer_dialog.dart';
 import 'package:sw/features/rooms/screens/room_screen.dart';
 import 'package:sw/features/home/cubit/home_cubit.dart';
 
 import '../../../common/components/helpers.dart';
-import '../../stores/all_stores/cubit/stores_cubit.dart';
 import '../../stores/store_main_screen.dart';
 
 class HomeScreen extends HookWidget {
@@ -66,34 +66,27 @@ class HomeScreen extends HookWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    showGeneralDialog(
-                      context: context,
-                      transitionBuilder:
-                          (context, animation, secondaryAnimation, child) =>
-                              Transform.scale(
-                        scale: animation.value,
-                        alignment: Alignment.bottomCenter,
-                        child: child,
-                      ),
-                      transitionDuration: const Duration(milliseconds: 200),
-                      pageBuilder: (context, animation, secondryAnimation) =>
-                          AppDialog(
-                        body: const [
-                          Text(
-                            "Duis deserunt esse proident dolor. Ex elit pariatur proident ipsum incididunt ullamco occaecat magna velit. Minim eiusmod nulla qui culpa nulla amet aliqua amet officia elit dolor ut et minim. Velit quis reprehenderit ullamco reprehenderit aliquip in elit id ipsum commodo mollit. Mollit labore proident ad qui duis.",
-                            style: TextStyle(color: Colors.white),
-                          )
-                        ],
-                        actions: [
-                          TextButton(
-                              onPressed: () {},
-                              child: const Text(
-                                "Close",
-                                style: TextStyle(color: Colors.white),
-                              ))
-                        ],
-                      ),
-                    );
+                    if (state.data.points! < 1000) {
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          backgroundColor: AppColors.backgroundColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          content: Text("لا يوجد لديك نقاط كافية",
+                              style: TextStyle(color: AppColors.primaryColor)),
+                        ),
+                      );
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (_) => BlocProvider.value(
+                          value: context.read<HomeCubit>(),
+                          child: const TransferDialog(),
+                        ),
+                      ).then((_) => context.read<HomeCubit>().getHomeData());
+                    }
                   },
                   child: Card(
                     color: const Color.fromARGB(255, 68, 68, 65),

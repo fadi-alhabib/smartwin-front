@@ -8,17 +8,20 @@ class UserModel {
   String? inviteCode;
   String? createdAt;
   String? updatedAt;
+  String? image;
 
-  UserModel(
-      {this.id,
-      this.email,
-      this.fullName,
-      this.phone,
-      this.country,
-      this.points,
-      this.inviteCode,
-      this.createdAt,
-      this.updatedAt});
+  UserModel({
+    this.id,
+    this.email,
+    this.fullName,
+    this.phone,
+    this.country,
+    this.points,
+    this.inviteCode,
+    this.createdAt,
+    this.updatedAt,
+    this.image,
+  });
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -30,6 +33,7 @@ class UserModel {
     inviteCode = json['invite_code'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    image = json['image'];
   }
 
   Map<String, dynamic> toJson() {
@@ -43,6 +47,7 @@ class UserModel {
     data['invite_code'] = inviteCode;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
+    data['image'] = image;
     return data;
   }
 }

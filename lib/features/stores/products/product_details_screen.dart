@@ -6,7 +6,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:gap/gap.dart';
 
-import '../../../common/constants/constants.dart';
 import '../all_stores/cubit/stores_cubit.dart';
 import '../all_stores/cubit/stores_states.dart';
 

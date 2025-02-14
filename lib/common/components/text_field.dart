@@ -18,7 +18,7 @@ class MyTextField extends FormField<String> {
   final Widget? prefix;
   MyTextField({
     super.key,
-    final FormFieldValidator<String>? validator,
+    super.validator,
     this.suffix,
     this.expands = false,
     this.lable,
@@ -33,7 +33,6 @@ class MyTextField extends FormField<String> {
     this.prefix,
   }) : super(
             initialValue: controller?.text,
-            validator: validator,
             builder: (field) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

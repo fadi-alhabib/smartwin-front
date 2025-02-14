@@ -65,6 +65,7 @@ class CreateStoreScreen extends HookWidget {
                           if (value!.isEmpty) {
                             return "يجب إضافة صورة";
                           }
+                          return null;
                         },
                         builder: (field) => Column(
                           children: [

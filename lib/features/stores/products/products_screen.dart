@@ -6,9 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:sw/features/stores/all_stores/cubit/stores_cubit.dart';
 import 'package:sw/features/stores/all_stores/cubit/stores_states.dart';
-import '/common/components/grid_view_builder.dart';
 import '/common/components/store_item_builder.dart';
-import '/common/constants/constants.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 import 'product_details_screen.dart';

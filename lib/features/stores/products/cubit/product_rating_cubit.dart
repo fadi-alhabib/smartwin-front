@@ -1,11 +1,7 @@
-import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:sw/common/utils/cache_helper.dart';
 import 'package:sw/common/utils/dio_helper.dart';
-import 'package:sw/features/auth/models/user_model.dart';
 
 part 'product_rating_state.dart';
 

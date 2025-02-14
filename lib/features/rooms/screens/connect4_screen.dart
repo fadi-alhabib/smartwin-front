@@ -94,11 +94,9 @@ class _C4GameScreenState extends State<C4GameScreen> {
                             bloc.c4GameId != null &&
                             currentTurn != null &&
                             !_isLoadingMove) {
-                          // Start loading state before dispatching move.
                           setState(() {
                             _isLoadingMove = true;
                           });
-                          // Dispatch a move event with the selected column.
                           context.read<PusherBloc>().add(
                                 MakeC4Move(
                                   roomId: widget.roomId,
@@ -128,7 +126,6 @@ class _C4GameScreenState extends State<C4GameScreen> {
                               ),
                             ),
                           ),
-                          // Display loading indicator in the center of the cell when a move is being processed.
                           if (_isLoadingMove)
                             Center(
                               child: CircularProgressIndicator(
@@ -156,7 +153,7 @@ class _C4GameScreenState extends State<C4GameScreen> {
     return Scaffold(
       body: BlocConsumer<PusherBloc, PusherState>(
         listener: (context, state) {
-          // Display error messages for starting a game or making a move.
+          // Existing error handling.
           if (state is C4GameStartError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Error starting game: ${state.error}')),
@@ -166,34 +163,106 @@ class _C4GameScreenState extends State<C4GameScreen> {
               SnackBar(content: Text('Error making move: ${state.error}')),
             );
           } else if (state is C4MoveMadeState) {
-            // After a move is made, stop the loading indicator.
             setState(() {
               _isLoadingMove = false;
             });
-
-            // Optionally display a message after a move is made.
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
           }
+          // NEW: When the game ends, display the appropriate dialog.
+          else if (state is C4GameOverState) {
+            // Retrieve the current user.
+            final UserModel user = UserModel.fromJson(
+              jsonDecode(CacheHelper.getCache(key: 'user')),
+            );
+            // Determine if the user is a participant.
+            bool isParticipant = widget.isHost ||
+                (widget.challengedId != null && widget.challengedId == user.id);
+            // Delay a little to ensure UI is settled.
+            Future.delayed(const Duration(milliseconds: 300), () {
+              if (isParticipant) {
+                if (user.id == state.winnerId) {
+                  // Winning dialog for the winner.
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => AlertDialog(
+                      titleTextStyle: TextStyle(color: AppColors.greyColor),
+                      contentTextStyle:
+                          TextStyle(color: AppColors.greyColor, fontSize: 24),
+                      backgroundColor: AppColors.backgroundColor,
+                      title: const Text("مبرووووك !!"),
+                      content: const Text("لقد ربحت 10 نقاط"),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            widget.pageController
+                                .animateTo(0,
+                                    duration: const Duration(seconds: 1),
+                                    curve: Curves.fastOutSlowIn)
+                                .then((_) => Navigator.of(context).pop());
+                          },
+                          child: const Text(
+                            "تم",
+                            style: TextStyle(color: AppColors.whiteColor),
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                } else {
+                  // Losing dialog for the loser.
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Game Over"),
+                      content: const Text("You lost the game."),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text("OK"),
+                        )
+                      ],
+                    ),
+                  );
+                }
+              } else {
+                // For spectators, show a dialog with the winner's ID.
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => AlertDialog(
+                    title: const Text("Game Over"),
+                    content: Text("The winner is: ${state.winnerId}"),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text("OK"),
+                      )
+                    ],
+                  ),
+                );
+              }
+            });
+          }
         },
         builder: (context, state) {
-          // Retrieve the bloc instance to access Connect Four data.
           final bloc = context.watch<PusherBloc>();
           final board = bloc.boardC4;
           final currentTurn = bloc.c4CurrentTurn;
-
           // Determine spectator status.
           final UserModel user = UserModel.fromJson(
             jsonDecode(CacheHelper.getCache(key: 'user')),
           );
-          final bool isSpectator = bloc.c4ChallengerId == user.id ||
-              context.read<RoomCubit>().myRoom!.hostId == user.id;
+          final bool isSpectator = bloc.c4ChallengerId != user.id &&
+              context.read<RoomCubit>().myRoom!.hostId != user.id;
 
           return Column(
             children: [
               const SizedBox(height: 16.0),
-              // Display the current turn with a rounded indicator.
+              // Display the current turn.
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Container(
@@ -232,7 +301,7 @@ class _C4GameScreenState extends State<C4GameScreen> {
               Expanded(
                   child: _buildBoard(bloc, board, currentTurn, isSpectator)),
               const SizedBox(height: 16.0),
-              // If the user is not the host and the game hasn’t started, show a waiting message.
+              // If not the host and the game hasn’t started, show waiting message.
               if (!widget.isHost && bloc.c4GameId == null)
                 const Padding(
                   padding: EdgeInsets.all(16.0),

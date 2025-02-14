@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
@@ -71,7 +69,7 @@ class CreateProductScreen extends HookWidget {
                               onTap: () {
                                 pickImages(images);
                               },
-                              child: images.value.length != 0
+                              child: images.value.isNotEmpty
                                   ? showImageWidget(context, images.value)
                                   : pickImageWidget(images, context)),
                           field.hasError

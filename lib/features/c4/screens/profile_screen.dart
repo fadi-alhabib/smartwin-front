@@ -1,17 +1,26 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:sw/common/utils/cache_helper.dart';
+import 'package:sw/features/auth/models/user_model.dart';
 
 import '../../../common/components/app_dialog.dart';
 import '../../../common/components/helpers.dart';
 import '../../../common/constants/constants.dart';
-import '../../stores/all_stores/cubit/stores_cubit.dart';
 import '../../stores/store_main_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends HookWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    UserModel user = UserModel.fromJson(
+      jsonDecode(CacheHelper.getCache(key: 'user')),
+    );
+    useEffect(() {
+      return null;
+    }, const []);
     return Padding(
         padding: const EdgeInsets.all(10.0),
         child: SingleChildScrollView(
@@ -26,7 +35,7 @@ class ProfileScreen extends StatelessWidget {
                   alignment: Alignment.bottomRight,
                   children: [
                     CircleAvatar(
-                      backgroundImage: NetworkImage(baseUrl),
+                      backgroundImage: NetworkImage(user.image!),
                       radius: 80,
                     ),
                     const CircleAvatar(
@@ -43,12 +52,15 @@ class ProfileScreen extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "${CacheHelper.getCache(key: "first_name")} ${CacheHelper.getCache(key: "last_name")}",
-                    style: const TextStyle(
+                  Center(
+                    child: Text(
+                      "${user.fullName}",
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
-                        fontSize: 30),
+                        fontSize: 30,
+                      ),
+                    ),
                   ),
                   const Divider(color: Colors.white),
                   const SizedBox(
@@ -70,7 +82,7 @@ class ProfileScreen extends StatelessWidget {
                             height: 4,
                           ),
                           Text(
-                            "${CacheHelper.getCache(key: "country")}",
+                            "${user.country}",
                             style: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 color: Colors.white),
@@ -134,7 +146,7 @@ class ProfileScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            int.parse(CacheHelper.getCache(key: "points")) == 0
+                            user.points! == 0
                                 ? Icons.heart_broken
                                 : Icons.favorite,
                             size: 25,
@@ -144,7 +156,7 @@ class ProfileScreen extends StatelessWidget {
                             height: 4,
                           ),
                           Text(
-                            "${CacheHelper.getCache(key: "points")}",
+                            "${user.points!}",
                             style: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 color: Colors.white),

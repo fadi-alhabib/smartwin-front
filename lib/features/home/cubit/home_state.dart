@@ -27,3 +27,21 @@ final class HomeDataError extends HomeState {
   @override
   List<Object?> get props => [error];
 }
+
+class TransferLoading extends HomeState {}
+
+class TransferSuccess extends HomeState {
+  final TransferModel transfer;
+  const TransferSuccess(this.transfer);
+
+  @override
+  List<Object?> get props => [transfer];
+}
+
+class TransferFailure extends HomeState {
+  final String error;
+  const TransferFailure(this.error);
+
+  @override
+  List<Object?> get props => [error];
+}

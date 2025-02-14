@@ -1,4 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
+import 'package:sw/common/utils/cache_helper.dart';
+import 'package:sw/features/auth/models/user_model.dart';
+
 class RoomModel {
   int? id;
   String? name;
@@ -6,6 +11,7 @@ class RoomModel {
   int? online;
   int? availableTime;
   int? hostId;
+  bool? isHost;
 
   RoomModel({
     this.id,
@@ -23,6 +29,10 @@ class RoomModel {
     online = json['online'];
     availableTime = json['available_time'];
     hostId = json['host_id'];
+    final UserModel user = UserModel.fromJson(
+      jsonDecode(CacheHelper.getCache(key: 'user')),
+    );
+    isHost = user.id == hostId;
   }
 
   Map<String, dynamic> toJson() {

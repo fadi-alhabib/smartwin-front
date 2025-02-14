@@ -12,7 +12,7 @@ class PusherConnect extends PusherBlocEvent {
   const PusherConnect(this.roomId);
 
   @override
-  List<Object?> get props => [roomId]; // No additional properties to compare
+  List<Object?> get props => [roomId];
 }
 
 class GetOldMessages extends PusherBlocEvent {
@@ -20,12 +20,11 @@ class GetOldMessages extends PusherBlocEvent {
   const GetOldMessages(this.roomId);
 
   @override
-  List<Object?> get props => [roomId]; // No additional properties to compare
+  List<Object?> get props => [roomId];
 }
 
 class PusherReceiveMessage extends PusherBlocEvent {
   final MessageModel message;
-
   const PusherReceiveMessage(this.message);
 
   @override
@@ -44,7 +43,6 @@ class SendMessage extends PusherBlocEvent {
 class StartQuizGame extends PusherBlocEvent {
   final int roomId;
   final bool isImagesGame;
-
   const StartQuizGame({required this.roomId, required this.isImagesGame});
 
   @override
@@ -54,13 +52,12 @@ class StartQuizGame extends PusherBlocEvent {
 class QuizStarted extends PusherBlocEvent {
   final List<QuestionModel> questions;
   final int quizId;
-
   const QuizStarted({
     required this.questions,
     required this.quizId,
   });
   @override
-  List<Object?> get props => [questions];
+  List<Object?> get props => [questions, quizId];
 }
 
 class QuizAnswerMade extends PusherBlocEvent {
@@ -78,23 +75,44 @@ class QuizAnswerMade extends PusherBlocEvent {
 class EndQuizGame extends PusherBlocEvent {
   final int score;
   final int minutesTaken;
-
   const EndQuizGame({required this.score, required this.minutesTaken});
 }
 
 class SubmitAnswer extends PusherBlocEvent {
   final int roomId;
   final int answerId;
-
   const SubmitAnswer({required this.roomId, required this.answerId});
 }
 
 class NoAnswer extends PusherBlocEvent {}
 
+/// NEW: Event dispatched when a vote update is received via Pusher.
+/// Contains the question ID and a map of answer IDs to vote counts.
+class QuizVoteUpdated extends PusherBlocEvent {
+  final int questionId;
+  final Map<String, dynamic> votes;
+  const QuizVoteUpdated({required this.questionId, required this.votes});
+
+  @override
+  List<Object?> get props => [questionId, votes];
+}
+
+/// NEW: Event to request aggregated votes from the backend (host only).
+class GetQuizVotes extends PusherBlocEvent {
+  final int roomId;
+  final int quizId;
+  const GetQuizVotes({required this.roomId, required this.quizId});
+
+  @override
+  List<Object?> get props => [roomId, quizId];
+}
+
 class StartC4Game extends PusherBlocEvent {
   final int roomId;
   final int challengedId;
   const StartC4Game({required this.roomId, required this.challengedId});
+  @override
+  List<Object?> get props => [roomId, challengedId];
 }
 
 class C4GameStarted extends PusherBlocEvent {
