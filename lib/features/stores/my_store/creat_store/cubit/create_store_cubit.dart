@@ -48,7 +48,7 @@ class CreateStoreCubit extends Cubit<CreateStoreState> {
       File? image}) async {
     emit(UpdateStoreLoadingState());
 
-    DioHelper.patchData(
+    DioHelper.postData(
             path: "stores/$id",
             data: FormData.fromMap(image != null
                 ? {

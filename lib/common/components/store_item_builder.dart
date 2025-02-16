@@ -79,12 +79,15 @@ class StoreItemBuilder extends HookWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      Text(
-                        country,
-                        style: const TextStyle(
-                            color: Colors.yellow,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500),
+                      Expanded(
+                        child: Text(
+                          country,
+                          maxLines: 1,
+                          style: const TextStyle(
+                              color: Colors.yellow,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500),
+                        ),
                       ),
                     ],
                   ),
