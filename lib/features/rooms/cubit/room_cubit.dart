@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sw/common/utils/dio_helper.dart';
+import 'package:sw/features/auth/models/user_model.dart';
 import 'package:sw/features/rooms/models/room_model.dart';
 
 part 'room_state.dart';
@@ -43,7 +44,7 @@ class RoomCubit extends Cubit<RoomState> {
       emit(GetMyRoomSuccess(room));
     } on DioException catch (e) {
       myRoom = null;
-      log(e.response!.data.toString());
+      log(e.toString());
       emit(GetMyRoomError(e.toString()));
     }
   }
@@ -119,6 +120,23 @@ class RoomCubit extends Cubit<RoomState> {
       emit(TimePurchaseError(errorMessage));
     } catch (e) {
       emit(TimePurchaseError(e.toString()));
+    }
+  }
+
+  Future<void> fetchActiveUsers() async {
+    emit(ActiveUsersLoading());
+    try {
+      final Response? response = await DioHelper.getAuthData(
+        path: 'messages/rooms/active-users',
+      );
+      final List<dynamic> usersData = response!.data['data'];
+      final List<UserModel> users = usersData
+          .map((json) => UserModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+      emit(ActiveUsersLoaded(users: users));
+    } on DioException catch (e) {
+      print(e.response!.data);
+      emit(ActiveUsersError(message: e.toString()));
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -27,7 +28,6 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> createTransfer({
-    required int userId,
     required String country,
     required String phone,
     required int points,
@@ -35,28 +35,47 @@ class HomeCubit extends Cubit<HomeState> {
     emit(TransferLoading());
     try {
       final response = await DioHelper.postData(
-        path: 'transfer', // Adjust this path if needed.
+        path: 'transfers',
         data: {
-          'user_id': userId,
           'country': country,
           'phone': phone,
           'points': points,
         },
       );
+      final transfer = TransferModel.fromJson(response!.data['data']);
+      emit(TransferSuccess(transfer));
+    } on DioException catch (error) {
+      print(error.response!.data);
+      final errorMessage =
+          error.response?.data['message'] ?? 'Failed to create transfer';
+      emit(TransferFailure(errorMessage));
+    }
+  }
 
-      // Check for a successful response.
-      if (response != null && response.statusCode == 201) {
-        // Assuming the API returns the created transfer in JSON format.
-        final transfer = TransferModel.fromJson(response.data);
-        emit(TransferSuccess(transfer));
+  Future<void> uploadProfileImage(File imageFile) async {
+    emit(ProfileImageUploading());
+
+    try {
+      FormData formData = FormData.fromMap({
+        "image": await MultipartFile.fromFile(imageFile.path,
+            filename: "profile.jpg"),
+      });
+
+      Response? response = await DioHelper.postData(
+        path: 'auth/profile-image',
+        data: formData,
+        headers: {"Content-Type": "multipart/form-data"},
+      );
+      print(response!.data);
+      if (response.statusCode == 200) {
+        String imageUrl = response.data['data']["image"];
+        emit(ProfileImageUploaded(imageUrl));
       } else {
-        // Extract error message if available.
-        final errorMessage =
-            response?.data['message'] ?? 'Failed to create transfer';
-        emit(TransferFailure(errorMessage));
+        emit(ProfileImageError("Upload failed"));
       }
-    } catch (error) {
-      emit(TransferFailure(error.toString()));
+    } on DioException catch (e) {
+      print(e.response!.data.toString());
+      emit(ProfileImageError("Error: ${e.toString()}"));
     }
   }
 }

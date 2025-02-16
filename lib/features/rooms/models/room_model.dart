@@ -8,7 +8,7 @@ class RoomModel {
   int? id;
   String? name;
   String? image;
-  int? online;
+  bool? online;
   int? availableTime;
   int? hostId;
   bool? isHost;

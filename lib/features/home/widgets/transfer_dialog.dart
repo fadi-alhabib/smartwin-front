@@ -48,7 +48,7 @@ class _TransferDialogState extends State<TransferDialog> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  'Error: ${state.error}',
+                  'خطأ: ${state.error}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -60,164 +60,161 @@ class _TransferDialogState extends State<TransferDialog> {
         builder: (context, state) {
           return Stack(
             children: [
-              AlertDialog(
-                backgroundColor: AppColors.backgroundColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                title: Text(
-                  'Create Transfer',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                content: SingleChildScrollView(
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _userIdController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: 'User ID',
-                            labelStyle:
-                                TextStyle(color: AppColors.primaryColor),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: AppColors.primaryColor),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: AppColors.primaryColor),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter user id';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _countryController,
-                          decoration: InputDecoration(
-                            labelText: 'Country',
-                            labelStyle:
-                                TextStyle(color: AppColors.primaryColor),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: AppColors.primaryColor),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: AppColors.primaryColor),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter country';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _phoneController,
-                          decoration: InputDecoration(
-                            labelText: 'Phone',
-                            labelStyle:
-                                TextStyle(color: AppColors.primaryColor),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: AppColors.primaryColor),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: AppColors.primaryColor),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter phone';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _pointsController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: 'Points',
-                            labelStyle:
-                                TextStyle(color: AppColors.primaryColor),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: AppColors.primaryColor),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: AppColors.primaryColor),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter points';
-                            }
-                            final points = int.tryParse(value);
-                            if (points == null || points < 1000) {
-                              return 'Points must be at least 1000';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                      ],
+              // Center the dialog and allow it to scroll if content overflows.
+              Center(
+                child: SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      // Limit the dialog to 80% of the screen height & 90% of its width.
+                      maxHeight: MediaQuery.of(context).size.height * 0.8,
+                      maxWidth: MediaQuery.of(context).size.width * 0.9,
                     ),
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(color: AppColors.primaryColor),
-                    ),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                    child: Directionality(
+                      // Force left-to-right text direction even for Arabic content.
+                      textDirection: TextDirection.ltr,
+                      child: AlertDialog(
+                        insetPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 16,
+                        ),
+                        scrollable: true,
+                        backgroundColor: AppColors.backgroundColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        title: Text(
+                          'إنشاء تحويل',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: AppColors.primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        content: SingleChildScrollView(
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(height: 16),
+                                TextFormField(
+                                  controller: _countryController,
+                                  style: const TextStyle(color: Colors.white),
+                                  decoration: InputDecoration(
+                                    labelText: 'البلد',
+                                    labelStyle: TextStyle(
+                                        color: AppColors.primaryColor),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: AppColors.primaryColor),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: AppColors.primaryColor),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'الرجاء إدخال البلد';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 16),
+                                TextFormField(
+                                  controller: _phoneController,
+                                  style: const TextStyle(color: Colors.white),
+                                  decoration: InputDecoration(
+                                    labelText: 'الهاتف',
+                                    labelStyle: TextStyle(
+                                        color: AppColors.primaryColor),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: AppColors.primaryColor),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: AppColors.primaryColor),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'الرجاء إدخال الهاتف';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 16),
+                                TextFormField(
+                                  controller: _pointsController,
+                                  keyboardType: TextInputType.number,
+                                  style: const TextStyle(color: Colors.white),
+                                  decoration: InputDecoration(
+                                    labelText: 'النقاط',
+                                    labelStyle: TextStyle(
+                                        color: AppColors.primaryColor),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: AppColors.primaryColor),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: AppColors.primaryColor),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'الرجاء إدخال النقاط';
+                                    }
+                                    final points = int.tryParse(value);
+                                    if (points == null || points < 1000) {
+                                      return 'يجب ألا تقل النقاط عن 1000';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 16),
+                              ],
+                            ),
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text(
+                              'إلغاء',
+                              style: TextStyle(color: AppColors.primaryColor),
+                            ),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () {
+                              if (_formKey.currentState?.validate() ?? false) {
+                                context.read<HomeCubit>().createTransfer(
+                                      country: _countryController.text,
+                                      phone: _phoneController.text,
+                                      points: int.parse(_pointsController.text),
+                                    );
+                              }
+                            },
+                            child: const Text('إرسال'),
+                          ),
+                        ],
                       ),
                     ),
-                    onPressed: () {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        context.read<HomeCubit>().createTransfer(
-                              userId: int.parse(_userIdController.text),
-                              country: _countryController.text,
-                              phone: _phoneController.text,
-                              points: int.parse(_pointsController.text),
-                            );
-                      }
-                    },
-                    child: const Text('Submit'),
                   ),
-                ],
+                ),
               ),
               if (state is TransferLoading)
                 Positioned.fill(

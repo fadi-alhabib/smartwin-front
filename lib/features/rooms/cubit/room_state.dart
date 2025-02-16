@@ -75,3 +75,23 @@ class TimePurchaseError extends RoomState {
   final String error;
   const TimePurchaseError(this.error);
 }
+
+class ActiveUsersLoading extends RoomState {}
+
+class ActiveUsersLoaded extends RoomState {
+  final List<UserModel> users;
+
+  const ActiveUsersLoaded({required this.users});
+
+  @override
+  List<Object> get props => [users];
+}
+
+class ActiveUsersError extends RoomState {
+  final String message;
+
+  const ActiveUsersError({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

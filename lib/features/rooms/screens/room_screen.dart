@@ -15,11 +15,6 @@ class RoomScreen extends HookWidget {
   Widget build(BuildContext context) {
     RoomModel? myRoom = context.watch<RoomCubit>().myRoom;
     useEffect(() {
-      if (myRoom != null) {
-        context.read<PusherBloc>().add(PusherConnect(myRoom.id!));
-        context.read<PusherBloc>().add(GetOldMessages(myRoom.id!));
-      }
-
       context.read<RoomCubit>().getMyRoom(id: roomId);
 
       return null;

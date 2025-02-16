@@ -45,3 +45,21 @@ class TransferFailure extends HomeState {
   @override
   List<Object?> get props => [error];
 }
+
+class ProfileImageUploading extends HomeState {}
+
+class ProfileImageUploaded extends HomeState {
+  final String imageUrl;
+  const ProfileImageUploaded(this.imageUrl);
+
+  @override
+  List<Object> get props => [imageUrl];
+}
+
+class ProfileImageError extends HomeState {
+  final String message;
+  const ProfileImageError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}

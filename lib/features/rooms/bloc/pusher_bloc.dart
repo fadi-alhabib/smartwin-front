@@ -226,6 +226,12 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
   int wrongAnswersCount = 0;
   int answersCount = 0;
   Future<void> handleQuizAnswerMade(QuizAnswerMade event, Emitter emit) async {
+    if (questions![answersCount]
+        .answers!
+        .where((ans) => ans.id == event.answerId)
+        .isEmpty) {
+      return;
+    }
     answersCount += 1;
     if (answersCount == 10) {
       await DioHelper.postData(
@@ -242,6 +248,7 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
   }
 
   Future<void> handleAnswer(SubmitAnswer event, Emitter emit) async {
+    log("handle answer clicked $answersCount");
     emit(SubmitAnswerLoading());
     try {
       await DioHelper.postData(
