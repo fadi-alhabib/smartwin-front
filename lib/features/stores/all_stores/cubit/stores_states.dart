@@ -37,7 +37,10 @@ class GetProductDetailsErroeState extends AllStoresStates {}
 
 class RatingProductLodingState extends AllStoresStates {}
 
-class RatingProductSuccessState extends AllStoresStates {}
+class RatingProductSuccessState extends AllStoresStates {
+  int id;
+  RatingProductSuccessState(this.id);
+}
 
 class RatingProductErroeState extends AllStoresStates {}
 

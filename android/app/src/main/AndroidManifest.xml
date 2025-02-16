@@ -21,7 +21,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" 
-                      android:host="e93a-185-107-56-46.ngrok-free.app" 
+                      android:host="fazetarab.com" 
                       android:pathPrefix="/api/stores" 
                       android:fragment="/store"/>
             </intent-filter>

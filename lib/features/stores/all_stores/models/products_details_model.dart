@@ -13,6 +13,8 @@ class Product {
   String? price;
   String? image;
   Store? store;
+  double? rate;
+  bool? userHasRated;
   List<dynamic> images = [];
 
   Product.fromJson(Map<String, dynamic> json) {
@@ -22,6 +24,8 @@ class Product {
     price = json['price'];
     image = json['image'];
     store = Store.fromJson(json['store']);
+    rate = json['average_rating'];
+    userHasRated = json['user_has_rated'];
     json['images'].forEach((element) {
       images.add(element["image"]);
     });

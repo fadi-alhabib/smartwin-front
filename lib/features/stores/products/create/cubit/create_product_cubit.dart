@@ -33,6 +33,27 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     });
   }
 
+  updateProduct(
+      {required String name,
+      required String description,
+      required String price,
+      required String id}) {
+    emit(UpdateProductLoadingState());
+    DioHelper.postData(
+        path: "products/$id",
+        data: FormData.fromMap({
+          "name": name,
+          "description": description,
+          "price": price,
+        })).then((value) {
+      print(value?.data);
+      emit(UpdateProductSuccessState());
+    }).catchError((error) {
+      print(error.response.data);
+      emit(UpdateProductFailureState());
+    });
+  }
+
   Future<void> deleteImage(int id) async {
     emit(ProductImageLoading());
     try {

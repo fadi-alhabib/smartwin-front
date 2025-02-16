@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:sw/features/stores/products/create/update_product_screen.dart';
 
 import '../../../../common/components/app_dialog.dart';
 import '../../../../common/components/grid_view_builder.dart';
@@ -180,27 +181,6 @@ class MyStoreScreen extends HookWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.star,
-                                size: 25,
-                                color: rating == 0
-                                    ? const Color.fromARGB(255, 117, 106, 76)
-                                    : Colors.amber,
-                              ),
-                              const SizedBox(
-                                height: 4,
-                              ),
-                              Text(
-                                "$rating",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white),
-                              )
-                            ],
-                          ),
                           GestureDetector(
                             onTap: () {
                               showGeneralDialog(
@@ -347,39 +327,70 @@ class MyStoreScreen extends HookWidget {
                       ),
                       products!.isNotEmpty
                           ? GridViewBuilder(
-                              itemBuilder: (context, index) =>
-                                  AnimationConfiguration.staggeredGrid(
-                                      duration:
-                                          const Duration(milliseconds: 500),
-                                      columnCount: 2,
-                                      position: index,
-                                      child: ScaleAnimation(
-                                          child: GestureDetector(
-                                        onTap: () {
-                                          AllStoresCubit()
-                                              .get(context)
-                                              .getProductDetails(
-                                                  id: products[index].id);
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ProductDetailsScreen(
-                                                  isProfile: true,
+                              itemBuilder:
+                                  (context, index) =>
+                                      AnimationConfiguration.staggeredGrid(
+                                          duration:
+                                              const Duration(milliseconds: 500),
+                                          columnCount: 2,
+                                          position: index,
+                                          child: ScaleAnimation(
+                                              child: Stack(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  AllStoresCubit()
+                                                      .get(context)
+                                                      .getProductDetails(
+                                                          id: products[index]
+                                                              .id);
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ProductDetailsScreen(
+                                                          isProfile: true,
+                                                        ),
+                                                      ));
+                                                },
+                                                child: StoreItemBuilder(
+                                                  imageUrl: products[index]
+                                                      .images![0]
+                                                      .image!,
+                                                  title: products[index].name!,
+                                                  country: "",
+                                                  description: "",
+                                                  rateWidget: false,
+                                                  priceWidget: true,
+                                                  price: products[index].price,
                                                 ),
-                                              ));
-                                        },
-                                        child: StoreItemBuilder(
-                                          imageUrl:
-                                              products[index].images![0].image!,
-                                          title: products[index].name!,
-                                          country: "",
-                                          description: "",
-                                          rateWidget: false,
-                                          priceWidget: true,
-                                          price: products[index].price,
-                                        ),
-                                      ))),
+                                              ),
+                                              IconButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).push(MaterialPageRoute(
+                                                        builder: (_) => UpdateProductScreen(
+                                                            name: products[
+                                                                    index]
+                                                                .name!,
+                                                            price:
+                                                                products[index]
+                                                                    .price!,
+                                                            description:
+                                                                products[index]
+                                                                    .description!,
+                                                            image:
+                                                                products[index]
+                                                                    .images!,
+                                                            id: products[index]
+                                                                .id
+                                                                .toString())));
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.edit,
+                                                    color: Colors.blue,
+                                                  ))
+                                            ],
+                                          ))),
                               crossAxisCount: 2,
                               itemCount: products.length)
                           : Center(

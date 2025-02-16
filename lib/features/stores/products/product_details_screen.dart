@@ -18,12 +18,18 @@ class ProductDetailsScreen extends HookWidget {
     var rate = useState(0.0);
 
     return BlocConsumer<AllStoresCubit, AllStoresStates>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is RatingProductSuccessState) {
+          AllStoresCubit().get(context).getProductDetails(id: state.id);
+        }
+      },
       builder: (context, state) {
+        var controller = AllStoresCubit().get(context);
         var model = AllStoresCubit().get(context).productDetailsModel;
         var product =
             AllStoresCubit().get(context).productDetailsModel?.product;
-        var rating = AllStoresCubit().get(context).ratingProduct;
+        var rating =
+            AllStoresCubit().get(context).productDetailsModel?.product?.rate;
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
@@ -31,6 +37,17 @@ class ProductDetailsScreen extends HookWidget {
               "معلومات المنتج",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
+            actions: [
+              Row(
+                children: [
+                  Text("${rating ?? 0.0}"),
+                  Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                ],
+              )
+            ],
           ),
           body: ConditionalBuilder(
             condition: model != null,
@@ -107,45 +124,48 @@ class ProductDetailsScreen extends HookWidget {
                   Gap(60),
                   isProfile
                       ? const SizedBox()
-                      : Center(
-                          child: Column(
-                            children: [
-                              const Text("قم بتقييم المنتج",
-                                  style: TextStyle(
-                                      fontSize: 18, color: Colors.white)),
-                              const Gap(10),
-                              Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.blue,
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(12),
-                                    child: RatingStars(
-                                      value: rate.value,
-                                      starOffColor:
-                                          const Color.fromARGB(255, 36, 36, 42),
-                                      starColor: Colors.white,
-                                      starSpacing: 7,
-                                      starSize: 30,
-                                      maxValueVisibility: false,
-                                      valueLabelVisibility: false,
-                                      animationDuration:
-                                          Duration(milliseconds: 1500),
-                                      onValueChanged: (value) {
-                                        rating(
-                                            id: product.id,
-                                            rating: value.round());
+                      : !(model!.product!.userHasRated!)
+                          ? Center(
+                              child: Column(
+                                children: [
+                                  const Text("قم بتقييم المنتج",
+                                      style: TextStyle(
+                                          fontSize: 18, color: Colors.white)),
+                                  const Gap(10),
+                                  Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.blue,
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(12),
+                                        child: RatingStars(
+                                          value: rate.value,
+                                          starOffColor: const Color.fromARGB(
+                                              255, 36, 36, 42),
+                                          starColor: Colors.white,
+                                          starSpacing: 7,
+                                          starSize: 30,
+                                          maxValueVisibility: false,
+                                          valueLabelVisibility: false,
+                                          animationDuration:
+                                              Duration(milliseconds: 1500),
+                                          onValueChanged: (value) {
+                                            controller.ratingProduct(
+                                                id: product.id!,
+                                                rating: value.round());
 
-                                        rate.value = value;
-                                        print(rate.value);
-                                      },
-                                      maxValue: 5,
-                                      starCount: 5,
-                                    ),
-                                  )),
-                            ],
-                          ),
-                        )
+                                            rate.value = value;
+                                            print(rate.value);
+                                          },
+                                          maxValue: 5,
+                                          starCount: 5,
+                                        ),
+                                      )),
+                                ],
+                              ),
+                            )
+                          : SizedBox()
                 ],
               ),
             ),

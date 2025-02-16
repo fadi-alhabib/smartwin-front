@@ -11,6 +11,12 @@ class CreateProductSuccessState extends CreateProductState {}
 
 class CreateProductFailureState extends CreateProductState {}
 
+class UpdateProductLoadingState extends CreateProductState {}
+
+class UpdateProductSuccessState extends CreateProductState {}
+
+class UpdateProductFailureState extends CreateProductState {}
+
 class ProductImageLoading extends CreateProductState {}
 
 class ProductImageOperationSuccess extends CreateProductState {

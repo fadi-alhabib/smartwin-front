@@ -37,7 +37,7 @@ class StoreScreen extends HookWidget {
           actions: [
             IconButton(
                 onPressed: () {
-                  Share.share("http://127.0.0.1:8000/api/stores/$id");
+                  Share.share("https://fazetarab.com/api/stores/$id");
                 },
                 icon: Icon(Icons.share))
           ],
@@ -101,133 +101,6 @@ class StoreScreen extends HookWidget {
                                     MainAxisAlignment.spaceAround,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          showGeneralDialog(
-                                            context: context,
-                                            transitionBuilder: (context,
-                                                    animation,
-                                                    secondaryAnimation,
-                                                    child) =>
-                                                Transform.scale(
-                                              scale: animation.value,
-                                              alignment: Alignment.bottomCenter,
-                                              child: child,
-                                            ),
-                                            transitionDuration: const Duration(
-                                                milliseconds: 200),
-                                            pageBuilder: (context, animation,
-                                                    secondryAnimation) =>
-                                                HookBuilder(builder: (context) {
-                                              var rate = useState(0.0);
-                                              return BlocListener<
-                                                  AllStoresCubit,
-                                                  AllStoresStates>(
-                                                listener: (context, state) {
-                                                  if (state
-                                                      is RatingSroreSuccessState) {
-                                                    Navigator.of(context).pop();
-                                                  }
-                                                },
-                                                child: AppDialog(
-                                                  body: [
-                                                    Column(
-                                                      children: [
-                                                        const Text(
-                                                            "قم بتقييم المتجر",
-                                                            style: TextStyle(
-                                                                fontSize: 18,
-                                                                color: Colors
-                                                                    .white)),
-                                                        const Gap(10),
-                                                        Center(
-                                                          child: Container(
-                                                              decoration: BoxDecoration(
-                                                                  color: Colors
-                                                                      .blue,
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              20)),
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(
-                                                                        12),
-                                                                child:
-                                                                    RatingStars(
-                                                                  value: rate
-                                                                      .value,
-                                                                  starOffColor:
-                                                                      const Color
-                                                                          .fromARGB(
-                                                                          255,
-                                                                          36,
-                                                                          36,
-                                                                          42),
-                                                                  starColor:
-                                                                      Colors
-                                                                          .white,
-                                                                  starSpacing:
-                                                                      7,
-                                                                  starSize: 30,
-                                                                  maxValueVisibility:
-                                                                      false,
-                                                                  valueLabelVisibility:
-                                                                      false,
-                                                                  animationDuration:
-                                                                      const Duration(
-                                                                          milliseconds:
-                                                                              1500),
-                                                                  onValueChanged:
-                                                                      (value) {
-                                                                    // putRate(
-                                                                    //     id: id,
-                                                                    //     rating:
-                                                                    //         value.round());
-
-                                                                    rate.value =
-                                                                        value;
-                                                                    print(rate
-                                                                        .value);
-                                                                  },
-                                                                  maxValue: 5,
-                                                                  starCount: 5,
-                                                                ),
-                                                              )),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                  actions: [],
-                                                ),
-                                              );
-                                            }),
-                                          );
-                                        },
-                                        child: Icon(
-                                          Icons.star,
-                                          size: 25,
-                                          color: model?.store?.rating == 0
-                                              ? const Color.fromARGB(
-                                                  255, 117, 106, 76)
-                                              : Colors.amber,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 4,
-                                      ),
-                                      Text(
-                                        "${model?.store?.rating}",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.white),
-                                      )
-                                    ],
-                                  ),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [

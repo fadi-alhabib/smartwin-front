@@ -118,13 +118,17 @@ class AllStoresCubit extends Cubit<AllStoresStates> {
   }
 
   RatingModel? ratingModel;
-  ratingProduct({required int? id, required int rating}) {
+  ratingProduct({required int id, required int rating}) {
     emit(RatingProductLodingState());
     DioHelper.postData(
-        path: "rate/product/$id",
-        data: FormData.fromMap({"rating": rating})).then((value) {
+      path: 'product-ratings/',
+      data: {
+        'product_id': id,
+        'rating': rating,
+      },
+    ).then((value) {
       ratingModel = RatingModel.fromJson(value?.data);
-      emit(RatingProductSuccessState());
+      emit(RatingProductSuccessState(id));
     }).catchError((error) {
       print(error.toString());
     });
