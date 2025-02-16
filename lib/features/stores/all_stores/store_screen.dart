@@ -6,6 +6,7 @@ import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:gap/gap.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sw/features/stores/all_stores/models/all_stores_model.dart';
 
 import '../../../common/components/app_dialog.dart';
@@ -34,6 +35,13 @@ class StoreScreen extends HookWidget {
           title: const Text(
             "Smart win",
           ),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Share.share("http://127.0.0.1:8000/api/stores/$id");
+                },
+                icon: Icon(Icons.share))
+          ],
         ),
         body: BlocConsumer<AllStoresCubit, AllStoresStates>(
           listener: (context, state) {},
@@ -59,7 +67,7 @@ class StoreScreen extends HookWidget {
                           Center(
                             child: CircleAvatar(
                               backgroundImage:
-                                  NetworkImage(model!.store!.image!),
+                                  NetworkImage("${model?.store?.image}"),
                               radius: 80,
                             ),
                           ),
@@ -70,14 +78,14 @@ class StoreScreen extends HookWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                "${model.store?.name}",
+                                "${model?.store?.name}",
                                 style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 30),
                               ),
                               Text(
-                                "${model.store?.type}",
+                                "${model?.store?.type}",
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
@@ -204,7 +212,7 @@ class StoreScreen extends HookWidget {
                                         child: Icon(
                                           Icons.star,
                                           size: 25,
-                                          color: model.store?.rating == 0
+                                          color: model?.store?.rating == 0
                                               ? const Color.fromARGB(
                                                   255, 117, 106, 76)
                                               : Colors.amber,
@@ -214,7 +222,7 @@ class StoreScreen extends HookWidget {
                                         height: 4,
                                       ),
                                       Text(
-                                        "${model.store?.rating}",
+                                        "${model?.store?.rating}",
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w400,
                                             color: Colors.white),
@@ -232,7 +240,7 @@ class StoreScreen extends HookWidget {
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        "${model.store?.country}",
+                                        "${model?.store?.country}",
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
@@ -245,7 +253,7 @@ class StoreScreen extends HookWidget {
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      model.store?.points == 0
+                                      model?.store?.points == 0
                                           ? const Icon(
                                               Icons.heart_broken,
                                               size: 25,
@@ -260,7 +268,7 @@ class StoreScreen extends HookWidget {
                                         height: 4,
                                       ),
                                       Text(
-                                        "${model.store?.points}",
+                                        "${model?.store?.points}",
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w400,
                                             color: Colors.white),
@@ -300,7 +308,7 @@ class StoreScreen extends HookWidget {
                                               AllStoresCubit()
                                                   .get(context)
                                                   .getProductDetails(
-                                                      id: model.store
+                                                      id: model?.store
                                                           ?.products[index].id);
 
                                               Navigator.push(
@@ -311,24 +319,21 @@ class StoreScreen extends HookWidget {
                                                   ));
                                             },
                                             child: StoreItemBuilder(
-                                              imageUrl: model
-                                                  .store!
-                                                  .products[index]
-                                                  .images![0]
-                                                  .image!,
+                                              imageUrl:
+                                                  "${model?.store!.products[index].images![0].image!}",
                                               title:
-                                                  "${model.store?.products[index].name}",
+                                                  "${model?.store?.products[index].name}",
                                               country: "",
                                               description:
-                                                  "${model.store?.products[index].description}",
+                                                  "${model?.store?.products[index].description}",
                                               rateWidget: false,
                                               priceWidget: true,
                                               price:
-                                                  "${model.store?.products[index].price}",
+                                                  "${model?.store?.products[index].price}",
                                             ),
                                           ))),
                                   crossAxisCount: 2,
-                                  itemCount: model.store!.products.length)
+                                  itemCount: model!.store!.products.length)
                             ],
                           ),
                         ],

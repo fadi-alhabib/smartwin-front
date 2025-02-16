@@ -87,7 +87,7 @@ class StoreHomeScreen extends HookWidget {
                       position: index,
                       child: ScaleAnimation(
                         child: StoreItemBuilder(
-                          imageUrl: allStoresModel[index].image!,
+                          imageUrl: "${allStoresModel[index].image}",
                           title: "${allStoresModel[index].name}",
                           country: "${allStoresModel[index].country}",
                           description: "${allStoresModel[index].type}",
