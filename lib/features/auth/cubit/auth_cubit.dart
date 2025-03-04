@@ -21,14 +21,17 @@ class AuthCubit extends Cubit<AuthState> {
   }) async {
     emit(AuthLoading());
     try {
-      final response = await DioHelper.postData(path: '/auth/register', data: {
-        'full_name': fullName,
-        'phone': phone,
-      });
+      final response = await DioHelper.postData(
+          path: 'auth/register',
+          data: {
+            'full_name': fullName,
+            'phone': phone,
+          },
+          isAuth: false);
       log(response!.data.toString());
       emit(AuthSuccess('User Registered Successfully.', response.data));
     } on DioException catch (e) {
-      log(e.response!.data.toString());
+      log(e.toString());
       emit(AuthError(_handleError(e)));
     }
   }
@@ -54,13 +57,11 @@ class AuthCubit extends Cubit<AuthState> {
         path: '/auth/verify-otp',
         data: {'phone': phone, 'otp': otp},
       );
-      await CacheHelper.setCache(
+      await CacheHelper.setString(
           key: 'token', value: response!.data['data']['token']);
-      await CacheHelper.setCache(
+      await CacheHelper.setString(
           key: 'user', value: json.encode(response.data['data']['user']));
       final UserModel user = UserModel.fromJson(response.data['data']['user']);
-      print(response.data);
-      print(response.data['data']['token']);
       emit(AuthVerifyOTPSuccess('OTP verified successfully.', user));
     } on DioException catch (e) {
       log(e.response!.data.toString());
@@ -83,9 +84,9 @@ class AuthCubit extends Cubit<AuthState> {
         path: '/auth/google-callback',
         data: {'access_token': googleAuth.accessToken},
       );
-      await CacheHelper.setCache(
+      await CacheHelper.setString(
           key: 'token', value: response!.data['data']['token']);
-      await CacheHelper.setCache(
+      await CacheHelper.setString(
           key: 'user', value: json.encode(response.data['data']['user']));
       final UserModel user = UserModel.fromJson(response.data['data']['user']);
       log(response.data.toString());

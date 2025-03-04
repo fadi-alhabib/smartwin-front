@@ -5,18 +5,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:gap/gap.dart';
+import 'package:lottie/lottie.dart';
+import 'package:sw/common/components/helpers.dart';
+import 'package:sw/common/components/loading.dart';
+import 'package:sw/common/constants/colors.dart';
 
 import '../all_stores/cubit/stores_cubit.dart';
 import '../all_stores/cubit/stores_states.dart';
 
 class ProductDetailsScreen extends HookWidget {
-  bool isProfile;
+  final bool isProfile;
+  final int productId;
 
-  ProductDetailsScreen({super.key, this.isProfile = false});
+  const ProductDetailsScreen({
+    super.key,
+    this.isProfile = false,
+    required this.productId,
+  });
   @override
   Widget build(BuildContext context) {
     var rate = useState(0.0);
-
+    useEffect(() {
+      AllStoresCubit().get(context).getProductDetails(id: productId);
+      return null;
+    }, const []);
     return BlocConsumer<AllStoresCubit, AllStoresStates>(
       listener: (context, state) {
         if (state is RatingProductSuccessState) {
@@ -25,11 +37,15 @@ class ProductDetailsScreen extends HookWidget {
       },
       builder: (context, state) {
         var controller = AllStoresCubit().get(context);
-        var model = AllStoresCubit().get(context).productDetailsModel;
+
         var product =
             AllStoresCubit().get(context).productDetailsModel?.product;
-        var rating =
-            AllStoresCubit().get(context).productDetailsModel?.product?.rate;
+        print(product);
+        var rating = AllStoresCubit()
+            .get(context)
+            .productDetailsModel
+            ?.product
+            ?.averageRating;
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
@@ -37,37 +53,40 @@ class ProductDetailsScreen extends HookWidget {
               "معلومات المنتج",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            actions: [
-              Row(
-                children: [
-                  Text("${rating ?? 0.0}"),
-                  Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                  ),
-                ],
-              )
-            ],
           ),
           body: ConditionalBuilder(
-            condition: model != null,
-            fallback: (context) => const Center(
-              child: CircularProgressIndicator(
-                color: Colors.yellow,
-              ),
-            ),
+            condition: product != null,
+            fallback: (context) => Loading(),
             builder: (context) => SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CarouselSlider(
-                      items:
-                          product?.images.map((e) => Image.network(e)).toList()
-                            ?..add(Image.network("${product?.image}")),
-                      options: CarouselOptions(
-                        autoPlay: product!.images.isNotEmpty,
-                        viewportFraction: 1.0,
-                      )),
+                    items: product?.images
+                        .map(
+                          (e) => Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 5.0),
+                            clipBehavior: Clip.antiAlias,
+                            child: Image.network(
+                              e.imageUrl!,
+                              height: getScreenSize(context).height / 3,
+                              width: getScreenSize(context).width,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                    options: CarouselOptions(
+                      autoPlay: product!.images.isNotEmpty,
+                      enlargeCenterPage: true,
+                      enlargeStrategy: CenterPageEnlargeStrategy.height,
+                      viewportFraction: 0.9,
+                    ),
+                  ),
                   const Gap(10),
                   Padding(
                     padding: EdgeInsets.all(12),
@@ -84,22 +103,39 @@ class ProductDetailsScreen extends HookWidget {
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Row(
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Text(
-                                  "${product.price}",
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "${product.price}",
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    const Gap(5),
+                                    Lottie.asset('images/animations/coin.json',
+                                        width: 40),
+                                  ],
                                 ),
-                                const Gap(5),
-                                const Icon(
-                                  Icons.favorite,
-                                  color: Colors.red,
+                                Gap(4),
+                                RatingStars(
+                                  value: product.averageRating!.toDouble(),
+                                  starOffColor: Colors.white,
+                                  starColor: AppColors.primaryColor,
+                                  starSpacing: 5,
+                                  starSize: 20,
+                                  maxValueVisibility: false,
+                                  valueLabelVisibility: false,
+                                  animationDuration:
+                                      Duration(milliseconds: 1500),
+                                  maxValue: 5,
+                                  starCount: 5,
                                 ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                         const Divider(color: Colors.white),
@@ -124,48 +160,51 @@ class ProductDetailsScreen extends HookWidget {
                   Gap(60),
                   isProfile
                       ? const SizedBox()
-                      : !(model!.product!.userHasRated!)
-                          ? Center(
-                              child: Column(
-                                children: [
-                                  const Text("قم بتقييم المنتج",
-                                      style: TextStyle(
-                                          fontSize: 18, color: Colors.white)),
-                                  const Gap(10),
-                                  Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.blue,
-                                          borderRadius:
-                                              BorderRadius.circular(20)),
-                                      child: Padding(
-                                        padding: EdgeInsets.all(12),
-                                        child: RatingStars(
-                                          value: rate.value,
-                                          starOffColor: const Color.fromARGB(
-                                              255, 36, 36, 42),
-                                          starColor: Colors.white,
-                                          starSpacing: 7,
-                                          starSize: 30,
-                                          maxValueVisibility: false,
-                                          valueLabelVisibility: false,
-                                          animationDuration:
-                                              Duration(milliseconds: 1500),
-                                          onValueChanged: (value) {
-                                            controller.ratingProduct(
-                                                id: product.id!,
-                                                rating: value.round());
+                      : Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                  product.userHasRated!
+                                      ? "لقد قمت بتقييم المنتج"
+                                      : "قم بتقييم المنتج",
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.white)),
+                              const Gap(10),
+                              Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.blue,
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(12),
+                                    child: RatingStars(
+                                      value: product.userHasRated!
+                                          ? product.yourRating!.toDouble()
+                                          : rate.value,
+                                      starOffColor:
+                                          const Color.fromARGB(255, 36, 36, 42),
+                                      starColor: Colors.white,
+                                      starSpacing: 7,
+                                      starSize: 30,
+                                      maxValueVisibility: false,
+                                      valueLabelVisibility: false,
+                                      animationDuration:
+                                          Duration(milliseconds: 1500),
+                                      onValueChanged: product.userHasRated!
+                                          ? null
+                                          : (value) {
+                                              controller.ratingProduct(
+                                                  id: product.id!,
+                                                  rating: value.round());
 
-                                            rate.value = value;
-                                            print(rate.value);
-                                          },
-                                          maxValue: 5,
-                                          starCount: 5,
-                                        ),
-                                      )),
-                                ],
-                              ),
-                            )
-                          : SizedBox()
+                                              rate.value = value;
+                                            },
+                                      maxValue: 5,
+                                      starCount: 5,
+                                    ),
+                                  )),
+                            ],
+                          ),
+                        )
                 ],
               ),
             ),

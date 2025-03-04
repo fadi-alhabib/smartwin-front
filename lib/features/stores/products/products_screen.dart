@@ -4,6 +4,7 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:sw/common/components/loading.dart';
 import 'package:sw/features/stores/all_stores/cubit/stores_cubit.dart';
 import 'package:sw/features/stores/all_stores/cubit/stores_states.dart';
 import '/common/components/store_item_builder.dart';
@@ -29,11 +30,7 @@ class ProductsScreen extends HookWidget {
         var products = cubit.allProductsModel?.products;
 
         return ConditionalBuilder(
-          fallback: (context) => const Center(
-            child: CircularProgressIndicator(
-              color: Colors.yellow,
-            ),
-          ),
+          fallback: (context) => Loading(),
           condition: products != null,
           builder: (context) => NotificationListener<ScrollNotification>(
             onNotification: (scrollInfo) {
@@ -79,18 +76,17 @@ class ProductsScreen extends HookWidget {
                     // Show loading spinner at the bottom when fetching more products.
                     if (state is AllStoresLoadingState &&
                         index == products.length) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Loading();
                     }
                     log(products[index].images[0].image!);
                     return GestureDetector(
                       onTap: () {
-                        AllStoresCubit()
-                            .get(context)
-                            .getProductDetails(id: products[index].id);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProductDetailsScreen(),
+                            builder: (context) => ProductDetailsScreen(
+                              productId: products[index].id!,
+                            ),
                           ),
                         );
                       },
@@ -117,7 +113,7 @@ class ProductsScreen extends HookWidget {
                       const NeverScrollableScrollPhysics(), // Disable grid scroll
                 ),
                 if (cubit.isLoading) ...[
-                  const Center(child: CircularProgressIndicator()),
+                  Loading(),
                 ],
               ],
             ),

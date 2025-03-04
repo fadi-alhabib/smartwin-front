@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class ProductDetailsModel {
   Product? product;
 
@@ -11,24 +12,33 @@ class Product {
   String? name;
   String? description;
   String? price;
-  String? image;
   Store? store;
-  double? rate;
+  int? averageRating;
   bool? userHasRated;
-  List<dynamic> images = [];
+  int? yourRating;
+  List<ImageModel> images = [];
 
   Product.fromJson(Map<String, dynamic> json) {
+    print("json: $json");
     id = json['id'];
     name = json['name'];
     description = json['description'];
-    price = json['price'];
-    image = json['image'];
+    price = json['price'].toString();
     store = Store.fromJson(json['store']);
-    rate = json['average_rating'];
+    averageRating =
+        json['average_rating'] != null ? (json['average_rating']) : null;
     userHasRated = json['user_has_rated'];
-    json['images'].forEach((element) {
-      images.add(element["image"]);
-    });
+    yourRating = json['your_rating'];
+    if (json['images'] != null) {
+      images = (json['images'] as List)
+          .map((imageJson) => ImageModel.fromJson(imageJson))
+          .toList();
+    }
+  }
+
+  @override
+  String toString() {
+    return 'Product(id: $id, name: $name, description: $description, price: $price, store: $store, averageRating: $averageRating, userHasRated: $userHasRated, yourRating: $yourRating,images: $images)';
   }
 }
 
@@ -39,14 +49,8 @@ class Store {
   String? country;
   String? address;
   String? phone;
-  int? points;
-  int? isActive;
-  int? userId;
-  String? createdAt;
-  String? updatedAt;
+  String? owner;
   String? image;
-  int? rating;
-  int? ratingsCount;
 
   Store.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -55,13 +59,17 @@ class Store {
     country = json['country'];
     address = json['address'];
     phone = json['phone'];
-    points = json['points'];
-    isActive = json['is_active'];
-    userId = json['user_id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    owner = json['owner'];
     image = json['image'];
-    rating = json['rating'];
-    ratingsCount = json['ratings_count'];
+  }
+}
+
+class ImageModel {
+  int? id;
+  String? imageUrl;
+
+  ImageModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    imageUrl = json['image'];
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sw/common/components/loading.dart';
 import 'package:sw/common/constants/colors.dart';
 import 'package:sw/features/rooms/cubit/room_cubit.dart';
 // Adjust the import as needed
@@ -63,6 +64,7 @@ class PurchaseTimeDialog extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(height: 20),
+                      // FIXME::
                       Row(
                         children: [
                           Expanded(
@@ -87,14 +89,7 @@ class PurchaseTimeDialog extends StatelessWidget {
               if (state is TimePurchaseLoading)
                 Positioned.fill(
                   child: Container(
-                    color: Colors.black.withOpacity(0.5),
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation(AppColors.primaryColor),
-                      ),
-                    ),
-                  ),
+                      color: Colors.black.withOpacity(0.5), child: Loading()),
                 ),
             ],
           );

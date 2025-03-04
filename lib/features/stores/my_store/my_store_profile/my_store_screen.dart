@@ -6,6 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:gap/gap.dart';
+import 'package:lottie/lottie.dart';
+import 'package:sw/common/components/loading.dart';
+import 'package:sw/common/constants/colors.dart';
 import 'package:sw/features/stores/products/create/update_product_screen.dart';
 
 import '../../../../common/components/app_dialog.dart';
@@ -40,8 +44,6 @@ class MyStoreScreen extends HookWidget {
             AllStoresCubit().get(context).ueserStoreModle?.store?.isActive;
         var points =
             AllStoresCubit().get(context).ueserStoreModle?.store?.points;
-        var rating =
-            AllStoresCubit().get(context).ueserStoreModle?.store?.rating;
 
         var address =
             AllStoresCubit().get(context).ueserStoreModle?.store?.address;
@@ -93,11 +95,7 @@ class MyStoreScreen extends HookWidget {
                     ],
                   ),
                 )
-              : const Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.yellow,
-                  ),
-                ),
+              : Loading(),
           builder: (context) => Padding(
             padding: const EdgeInsets.all(10.0),
             child: SingleChildScrollView(
@@ -197,18 +195,23 @@ class MyStoreScreen extends HookWidget {
                                 pageBuilder:
                                     (context, animation, secondryAnimation) =>
                                         AppDialog(
-                                  body: const [
+                                  body: [
                                     Text(
-                                      "المتجر مفعل لتاريخ 25/6/2025",
+                                      isActive == 0
+                                          ? 'متجرك غير مفعل يرجى التواصل معنا للتفعيل'
+                                          : "متجرك مفعل و يظهر في قائمة المتاجر",
                                       style: TextStyle(color: Colors.white),
                                     )
                                   ],
                                   actions: [
                                     TextButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
                                         child: const Text(
                                           "إغلاق",
-                                          style: TextStyle(color: Colors.white),
+                                          style: TextStyle(
+                                              color: AppColors.primaryColor),
                                         ))
                                   ],
                                 ),
@@ -240,13 +243,8 @@ class MyStoreScreen extends HookWidget {
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                points == 0
-                                    ? Icons.heart_broken
-                                    : Icons.favorite,
-                                size: 25,
-                                color: Colors.red,
-                              ),
+                              Lottie.asset('images/animations/coin.json',
+                                  width: 40),
                               const SizedBox(
                                 height: 4,
                               ),
@@ -264,41 +262,42 @@ class MyStoreScreen extends HookWidget {
                         height: 20,
                       ),
                       const Divider(color: Colors.white),
-                      Row(
-                        children: [
-                          const CircleAvatar(
-                            radius: 17,
-                            backgroundColor: Color.fromARGB(255, 68, 68, 65),
-                            child: Icon(
-                              Icons.edit,
-                              color: Colors.blue,
-                              size: 18,
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => CreateStoreScreen(
+                              update: true,
+                              name: name,
+                              address: address,
+                              type: type,
+                              phone: model?.store?.phone,
+                              networkImage: image,
+                              id: "${model?.store?.id}",
+                              country: model?.store?.country,
                             ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => CreateStoreScreen(
-                                  update: true,
-                                  name: name,
-                                  address: address,
-                                  type: type,
-                                  phone: model?.store?.phone,
-                                  networkImage: image,
-                                  id: "${model?.store?.id}",
-                                  country: model?.store?.country,
-                                ),
-                              ));
-                            },
-                            child: const Text(
+                          ));
+                        },
+                        child: Row(
+                          children: [
+                            const CircleAvatar(
+                              radius: 17,
+                              backgroundColor: Color.fromARGB(255, 68, 68, 65),
+                              child: Icon(
+                                Icons.edit,
+                                color: Colors.blue,
+                                size: 18,
+                              ),
+                            ),
+                            Gap(5),
+                            const Text(
                               "تعديل معلومات المتجر",
                               style: TextStyle(
                                 color: Colors.blue,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -327,47 +326,44 @@ class MyStoreScreen extends HookWidget {
                       ),
                       products!.isNotEmpty
                           ? GridViewBuilder(
-                              itemBuilder:
-                                  (context, index) =>
-                                      AnimationConfiguration.staggeredGrid(
-                                          duration:
-                                              const Duration(milliseconds: 500),
-                                          columnCount: 2,
-                                          position: index,
-                                          child: ScaleAnimation(
-                                              child: Stack(
-                                            children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  AllStoresCubit()
-                                                      .get(context)
-                                                      .getProductDetails(
-                                                          id: products[index]
-                                                              .id);
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ProductDetailsScreen(
-                                                          isProfile: true,
-                                                        ),
-                                                      ));
-                                                },
-                                                child: StoreItemBuilder(
-                                                  imageUrl: products[index]
-                                                      .images![0]
-                                                      .image!,
-                                                  title: products[index].name!,
-                                                  country: "",
-                                                  description: "",
-                                                  rateWidget: false,
-                                                  priceWidget: true,
-                                                  price: products[index].price,
-                                                ),
-                                              ),
-                                              IconButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).push(MaterialPageRoute(
+                              itemBuilder: (context, index) =>
+                                  AnimationConfiguration.staggeredGrid(
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      columnCount: 2,
+                                      position: index,
+                                      child: ScaleAnimation(
+                                          child: Stack(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProductDetailsScreen(
+                                                      isProfile: true,
+                                                      productId:
+                                                          products[index].id!,
+                                                    ),
+                                                  ));
+                                            },
+                                            child: StoreItemBuilder(
+                                              imageUrl: products[index]
+                                                  .images![0]
+                                                  .image!,
+                                              title: products[index].name!,
+                                              country: "",
+                                              description: "",
+                                              rateWidget: false,
+                                              priceWidget: true,
+                                              price: products[index].price,
+                                            ),
+                                          ),
+                                          IconButton(
+                                              onPressed: () {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
                                                         builder: (_) => UpdateProductScreen(
                                                             name: products[
                                                                     index]
@@ -378,19 +374,19 @@ class MyStoreScreen extends HookWidget {
                                                             description:
                                                                 products[index]
                                                                     .description!,
-                                                            image:
+                                                            originalImages:
                                                                 products[index]
                                                                     .images!,
                                                             id: products[index]
                                                                 .id
                                                                 .toString())));
-                                                  },
-                                                  icon: Icon(
-                                                    Icons.edit,
-                                                    color: Colors.blue,
-                                                  ))
-                                            ],
-                                          ))),
+                                              },
+                                              icon: Icon(
+                                                Icons.edit,
+                                                color: Colors.blue,
+                                              ))
+                                        ],
+                                      ))),
                               crossAxisCount: 2,
                               itemCount: products.length)
                           : Center(

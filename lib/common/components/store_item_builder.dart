@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:gap/gap.dart';
+import 'package:lottie/lottie.dart';
 
 class StoreItemBuilder extends HookWidget {
-  StoreItemBuilder(
+  const StoreItemBuilder(
       {super.key,
       required this.imageUrl,
       required this.title,
@@ -20,16 +21,16 @@ class StoreItemBuilder extends HookWidget {
       : assert(rateWidget ? rating != null : true),
         assert(priceWidget ? price != null : true),
         assert(onlineWidget ? isOnline != null : true);
-  String imageUrl;
-  String title;
-  String country;
-  String description;
-  double? rating;
-  bool rateWidget;
-  bool priceWidget;
-  String? price;
-  bool onlineWidget;
-  bool? isOnline;
+  final String imageUrl;
+  final String title;
+  final String country;
+  final String description;
+  final double? rating;
+  final bool rateWidget;
+  final bool priceWidget;
+  final String? price;
+  final bool onlineWidget;
+  final bool? isOnline;
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, boxConstraints) {
@@ -57,12 +58,16 @@ class StoreItemBuilder extends HookWidget {
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(25),
                     bottomRight: Radius.circular(25))),
-            height: boxConstraints.maxHeight / 2.7,
+            height: priceWidget
+                ? boxConstraints.maxHeight / 2.1
+                : boxConstraints.maxHeight / 4.7,
             clipBehavior: Clip.none,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,9 +77,9 @@ class StoreItemBuilder extends HookWidget {
                         child: Text(
                           title,
                           style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 17),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -85,7 +90,6 @@ class StoreItemBuilder extends HookWidget {
                           maxLines: 1,
                           style: const TextStyle(
                               color: Colors.yellow,
-                              fontSize: 10,
                               fontWeight: FontWeight.w500),
                         ),
                       ),
@@ -93,76 +97,58 @@ class StoreItemBuilder extends HookWidget {
                   ),
                   const Gap(2),
                   BuildCondition(
-                    condition: rateWidget && rating != null,
-                    builder: (context) => Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          description,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        RatingStars(
-                          valueLabelVisibility: false,
-                          starSize: 8,
-                          valueLabelColor: Colors.red,
-                          starColor: Colors.yellow,
-                          starOffColor: Colors.transparent,
-                          starCount: 5,
-                          maxValue: 5,
-                          value: rating ?? 0,
-                        ),
-                      ],
-                    ),
-                    fallback: (context) => priceWidget && price != null
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      condition: rateWidget && rating != null,
+                      builder: (context) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(
-                                child: Text(
-                                  description,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w500),
-                                ),
+                              // Text(
+                              //   description,
+                              //   style: const TextStyle(
+                              //       color: Colors.white,
+                              //       fontSize: 10,
+                              //       fontWeight: FontWeight.w500),
+                              // ),
+                              RatingStars(
+                                valueLabelVisibility: false,
+                                starSize: 8,
+                                valueLabelColor: Colors.red,
+                                starColor: Colors.yellow,
+                                starOffColor: Colors.transparent,
+                                starCount: 5,
+                                maxValue: 5,
+                                value: rating ?? 0,
                               ),
-                              Row(
-                                children: [
-                                  Text(
-                                    "$price",
-                                    style: const TextStyle(
-                                        fontSize: 14, color: Colors.white),
-                                  ),
-                                  const Icon(
-                                    Icons.favorite,
-                                    color: Colors.red,
-                                    size: 16,
-                                  )
-                                ],
-                              ),
-                            ],
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                "$price ",
-                                style: const TextStyle(
-                                    fontSize: 14, color: Colors.white),
-                              ),
-                              CircleAvatar(
-                                radius: 7,
-                                backgroundColor:
-                                    isOnline! ? Colors.green : Colors.grey,
-                              )
                             ],
                           ),
-                  )
+                      fallback: (context) => priceWidget && price != null
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    description,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "$price",
+                                      style: const TextStyle(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                    Lottie.asset('images/animations/coin.json',
+                                        width: 40),
+                                  ],
+                                ),
+                              ],
+                            )
+                          : SizedBox())
                 ],
               ),
             ),

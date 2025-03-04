@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sw/common/components/button_animated.dart' hide ScaleAnimation;
+import 'package:sw/common/components/loading.dart';
 import 'package:sw/common/components/logo.dart';
 import 'package:sw/features/auth/cubit/auth_cubit.dart';
 import 'package:sw/features/home/screens/main_screen.dart';
@@ -141,8 +142,7 @@ class OTPScreen extends HookWidget {
                             : null,
                         margin: const EdgeInsets.all(20),
                         child: state is AuthVerifyOTPLoading
-                            ? const CircularProgressIndicator(
-                                color: Colors.white)
+                            ? const Loading()
                             : const Center(
                                 child: Text(
                                   'تحقق',

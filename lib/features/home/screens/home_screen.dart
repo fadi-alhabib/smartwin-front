@@ -2,8 +2,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:sw/common/components/app_dialog.dart';
+import 'package:gap/gap.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sw/common/components/button_animated.dart';
+import 'package:sw/common/components/loading.dart';
 import 'package:sw/common/constants/colors.dart';
 import 'package:sw/features/home/widgets/purchase_time_dialog.dart';
 import 'package:sw/features/home/widgets/transfer_dialog.dart';
@@ -27,11 +29,7 @@ class HomeScreen extends HookWidget {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
         if (state is HomeDataLoading) {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: AppColors.primaryColor,
-            ),
-          );
+          return Loading();
         } else if (state is HomeDataError) {
           return const Center(
             child: Text(
@@ -82,10 +80,19 @@ class HomeScreen extends HookWidget {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  content: Text(
-                                    "لا يوجد لديك نقاط كافية",
-                                    style: TextStyle(
-                                        color: AppColors.primaryColor),
+                                  content: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Lottie.asset(
+                                          "images/animations/sad.json"),
+                                      Gap(10),
+                                      Text(
+                                        "لا يوجد لديك نقاط كافية",
+                                        style: TextStyle(
+                                            color: AppColors.primaryColor),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               );

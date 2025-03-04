@@ -2,8 +2,11 @@ import 'package:another_transformer_page_view/another_transformer_page_view.dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lottie/lottie.dart';
 
 import 'package:sliding_clipped_nav_bar/sliding_clipped_nav_bar.dart';
+import 'package:sw/common/constants/colors.dart';
+import 'package:sw/common/utils/cache_helper.dart';
 import 'package:sw/features/stores/my_store/my_store_profile/my_store_screen.dart';
 
 import '../../common/components/page_transformer.dart';
@@ -32,32 +35,38 @@ class StoreMainScreen extends HookWidget {
                 color: Color.fromARGB(255, 255, 210, 63),
                 fontStyle: FontStyle.italic),
           ),
-          actions: const [
+          actions: [
             Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Row(
                   children: [
                     Text(
-                      "نقاطي:",
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      "2",
+                      CacheHelper.getCache(key: "userPoints").toString(),
                       style: TextStyle(
-                        color: Color.fromARGB(255, 255, 210, 63),
+                        color: AppColors.primaryColor,
                         fontSize: 15,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(
-                      width: 5,
-                    ),
+                    Lottie.asset('images/animations/coin.json', width: 40),
                   ],
-                ))
+                )),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    CacheHelper.getCache(key: "userPoints").toString(),
+                    style: TextStyle(
+                      color: AppColors.greenColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Lottie.asset('images/animations/dollar.json'),
+                ],
+              ),
+            )
           ],
         ),
         bottomNavigationBar: Container(

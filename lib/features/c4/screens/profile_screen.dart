@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sw/common/components/loading.dart';
 import 'package:sw/common/utils/cache_helper.dart';
 
 import 'package:sw/features/auth/models/user_model.dart';
 import 'package:sw/features/home/cubit/home_cubit.dart';
-import '../../../common/components/app_dialog.dart';
 import '../../../common/components/helpers.dart';
 import '../../stores/store_main_screen.dart';
 
@@ -20,7 +20,6 @@ class ProfileScreen extends HookWidget {
     UserModel user = UserModel.fromJson(
       jsonDecode(CacheHelper.getCache(key: 'user')),
     );
-    print(CacheHelper.getCache(key: 'user'));
     Future<void> pickImage(BuildContext context) async {
       final ImagePicker picker = ImagePicker();
       final XFile? pickedFile =
@@ -38,7 +37,7 @@ class ProfileScreen extends HookWidget {
         if (state is ProfileImageUploaded) {
           imageUrl = state.imageUrl;
           user.image = imageUrl;
-          CacheHelper.setCache(key: 'user', value: jsonEncode(user));
+          CacheHelper.setString(key: 'user', value: jsonEncode(user));
           // CacheHelper.saveCache(key: 'user_image', value: imageUrl);
         } else {
           imageUrl = user.image;
@@ -75,7 +74,7 @@ class ProfileScreen extends HookWidget {
                       ),
                       if (state is ProfileImageUploading)
                         const Positioned.fill(
-                          child: Center(child: CircularProgressIndicator()),
+                          child: Loading(),
                         ),
                     ],
                   ),
@@ -96,100 +95,100 @@ class ProfileScreen extends HookWidget {
                     ),
                     const Divider(color: Colors.white),
                     const SizedBox(height: 5),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.location_on,
-                              size: 25,
-                              color: Color.fromARGB(255, 255, 210, 63),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              "${user.country}",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white),
-                            )
-                          ],
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            showGeneralDialog(
-                              context: context,
-                              transitionBuilder: (context, animation,
-                                      secondaryAnimation, child) =>
-                                  Transform.scale(
-                                scale: animation.value,
-                                alignment: Alignment.bottomCenter,
-                                child: child,
-                              ),
-                              transitionDuration:
-                                  const Duration(milliseconds: 350),
-                              pageBuilder:
-                                  (context, animation, secondryAnimation) =>
-                                      AppDialog(
-                                body: const [
-                                  Text(
-                                    "حساب الماسي لغاية 2/4/2112",
-                                    style: TextStyle(color: Colors.white),
-                                  )
-                                ],
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {},
-                                    child: const Text(
-                                      "إغلاق",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            );
-                          },
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.diamond_outlined,
-                                color: Colors.deepPurpleAccent,
-                                size: 35,
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                "غير مفعل",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              user.points! == 0
-                                  ? Icons.heart_broken
-                                  : Icons.favorite,
-                              size: 25,
-                              color: Colors.red,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              "${user.points!}",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    //   crossAxisAlignment: CrossAxisAlignment.center,
+                    //   children: [
+                    //     Column(
+                    //       mainAxisAlignment: MainAxisAlignment.center,
+                    //       children: [
+                    //         const Icon(
+                    //           Icons.location_on,
+                    //           size: 25,
+                    //           color: Color.fromARGB(255, 255, 210, 63),
+                    //         ),
+                    //         const SizedBox(height: 4),
+                    //         Text(
+                    //           "${user.country}",
+                    //           style: const TextStyle(
+                    //               fontWeight: FontWeight.w400,
+                    //               color: Colors.white),
+                    //         )
+                    //       ],
+                    //     ),
+                    //     GestureDetector(
+                    //       onTap: () {
+                    //         showGeneralDialog(
+                    //           context: context,
+                    //           transitionBuilder: (context, animation,
+                    //                   secondaryAnimation, child) =>
+                    //               Transform.scale(
+                    //             scale: animation.value,
+                    //             alignment: Alignment.bottomCenter,
+                    //             child: child,
+                    //           ),
+                    //           transitionDuration:
+                    //               const Duration(milliseconds: 350),
+                    //           pageBuilder:
+                    //               (context, animation, secondryAnimation) =>
+                    //                   AppDialog(
+                    //             body: const [
+                    //               Text(
+                    //                 "حساب الماسي لغاية 2/4/2112",
+                    //                 style: TextStyle(color: Colors.white),
+                    //               )
+                    //             ],
+                    //             actions: [
+                    //               TextButton(
+                    //                 onPressed: () {},
+                    //                 child: const Text(
+                    //                   "إغلاق",
+                    //                   style: TextStyle(color: Colors.white),
+                    //                 ),
+                    //               )
+                    //             ],
+                    //           ),
+                    //         );
+                    //       },
+                    //       child: const Column(
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         children: [
+                    //           Icon(
+                    //             Icons.diamond_outlined,
+                    //             color: Colors.deepPurpleAccent,
+                    //             size: 35,
+                    //           ),
+                    //           SizedBox(height: 4),
+                    //           Text(
+                    //             "غير مفعل",
+                    //             style: TextStyle(
+                    //                 fontWeight: FontWeight.w400,
+                    //                 color: Colors.white),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //     Column(
+                    //       mainAxisAlignment: MainAxisAlignment.center,
+                    //       children: [
+                    //         Icon(
+                    //           user.points! == 0
+                    //               ? Icons.heart_broken
+                    //               : Icons.favorite,
+                    //           size: 25,
+                    //           color: Colors.red,
+                    //         ),
+                    //         const SizedBox(height: 4),
+                    //         Text(
+                    //           "${user.points!}",
+                    //           style: const TextStyle(
+                    //               fontWeight: FontWeight.w400,
+                    //               color: Colors.white),
+                    //         )
+                    //       ],
+                    //     ),
+                    //   ],
+                    // ),
                     const SizedBox(height: 50),
                     Center(
                       child: GestureDetector(
@@ -213,7 +212,6 @@ class ProfileScreen extends HookWidget {
                                 Text(
                                   "الذهاب للمتجر ",
                                   style: TextStyle(
-                                      fontSize: 17,
                                       color: Colors.white,
                                       fontWeight: FontWeight.w400),
                                 ),

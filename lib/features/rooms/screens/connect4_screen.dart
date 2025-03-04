@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sw/common/components/loading.dart';
 import 'package:sw/common/constants/colors.dart';
 import 'package:sw/common/utils/cache_helper.dart';
 import 'package:sw/features/auth/models/user_model.dart';
@@ -126,15 +127,7 @@ class _C4GameScreenState extends State<C4GameScreen> {
                               ),
                             ),
                           ),
-                          if (_isLoadingMove)
-                            Center(
-                              child: CircularProgressIndicator(
-                                strokeWidth: 4,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white.withOpacity(0.7),
-                                ),
-                              ),
-                            ),
+                          if (_isLoadingMove) Loading()
                         ],
                       ),
                     ),

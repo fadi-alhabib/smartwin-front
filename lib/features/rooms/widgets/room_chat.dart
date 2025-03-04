@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:sw/common/components/loading.dart';
 import 'package:sw/common/constants/colors.dart';
 import 'package:sw/common/utils/cache_helper.dart';
 import 'package:sw/features/auth/models/user_model.dart';
@@ -61,11 +62,7 @@ class RoomChat extends HookWidget {
                       },
                       builder: (context, state) {
                         if (state is GetOldMessagesLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.primaryColor,
-                            ),
-                          );
+                          return Loading();
                         }
                         if (messages.isNotEmpty) {
                           return ListView.separated(

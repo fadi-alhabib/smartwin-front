@@ -53,7 +53,7 @@ class Products {
   String? description;
   String? price;
   List<Images>? images;
-  Null averageRating;
+  int? averageRating;
   bool? userHasRated;
 
   Products(
@@ -76,7 +76,7 @@ class Products {
         images!.add(Images.fromJson(v));
       });
     }
-    averageRating = json['average_rating'];
+    averageRating = json['average_rating'] ?? 0;
     userHasRated = json['user_has_rated'];
   }
 

@@ -98,7 +98,6 @@ class C4Bloc extends Bloc<C4Event, C4BlocState> {
       //   // TODO:: Handle Incomming events
       // });
     } catch (error) {
-      print(error);
       emit(C4WSError());
     }
   }

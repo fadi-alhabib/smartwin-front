@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,15 +20,19 @@ class AllStoresCubit extends Cubit<AllStoresStates> {
   int currentPage = 1; // Keep track of the current page.
   bool isLoading = false; // Prevent multiple calls at the same time.
 
-  void getAllStores() {
+  Future<void> getAllStores() async {
     if (isLoading) return; // Avoid multiple API calls.
     isLoading = true;
     emit(AllStoresLoadingState());
 
-    DioHelper.getData(path: "stores/", queryParameters: {
-      'page': currentPage.toString(), // Send current page as a parameter.
-      'per_page': '8', // Limit results per page (you can make this dynamic).
-    }).then((value) {
+    try {
+      final value = await DioHelper.getData(
+        path: "stores/",
+        queryParameters: {
+          'page': currentPage.toString(), // Send current page as a parameter.
+          'per_page': '8', // Limit results per page.
+        },
+      );
       List<dynamic> jsonStores = value!.data['data'];
       List<Stores> stores =
           jsonStores.map((stor) => Stores.fromJson(stor)).toList();
@@ -35,117 +41,118 @@ class AllStoresCubit extends Cubit<AllStoresStates> {
       } else {
         allStoresModel!.addAll(stores);
       }
-      print(value.data);
       emit(AllStoresSuccessState());
       currentPage++; // Increase the page number for the next call.
-    }).catchError((error) {
+    } on DioException catch (error) {
+      print(error.response!.data);
       emit(AllStoresErrorState());
-    }).whenComplete(() {
+    } finally {
       isLoading = false; // Reset the loading flag after the request completes.
-    });
+    }
   }
 
   UeserStoreModle? storeDetails;
-  getStore(id) {
+  Future<void> getStore(id) async {
     emit(GetStoreLoadingState());
-    DioHelper.getData(path: "stores/$id").then((value) {
-      storeDetails = UeserStoreModle.fromJson(value?.data);
+    try {
+      final response = await DioHelper.getData(path: "stores/$id");
+      print(response!.data);
+      storeDetails = UeserStoreModle.fromJson(response.data);
       emit(GetStoreSuccessState());
-    }).catchError((error) {
-      print(error.toString());
+    } catch (error) {
+      rethrow;
       emit(GetStoreErrorState());
-    });
+    }
   }
 
   AllProductsModel? allProductsModel;
-
   int currentProductPage = 1;
 
-  void getAllProducts({bool loadMore = false}) {
+  Future<void> getAllProducts({bool loadMore = false}) async {
     if (!loadMore) {
       currentProductPage =
           1; // Reset the page when it's not a "load more" request.
     }
 
     emit(AllStoresLoadingState());
-
-    DioHelper.getData(
-      path: 'products/',
-      queryParameters: {'page': currentProductPage, 'per_page': 8},
-    ).then((value) {
+    try {
+      final value = await DioHelper.getData(
+        path: 'products/',
+        queryParameters: {'page': currentProductPage, 'per_page': 8},
+      );
       var newProducts = AllProductsModel.fromJson(value?.data);
       if (loadMore) {
         allProductsModel?.products
-            .addAll(newProducts.products); // Append new products
+            .addAll(newProducts.products); // Append new products.
       } else {
-        allProductsModel = newProducts; // Replace with the fresh list
+        allProductsModel = newProducts; // Replace with the fresh list.
       }
       emit(AllStoresSuccessState());
-      currentProductPage++; // Increment the page for the next request
-    }).catchError((error) {
-      throw error;
+      currentProductPage++; // Increment the page for the next request.
+    } catch (error) {
       emit(AllStoresErrorState());
-    });
+    }
   }
 
   UeserStoreModle? ueserStoreModle;
   bool noStore = false;
-  getUserStore() {
+  Future<void> getUserStore() async {
     ueserStoreModle = null;
     emit(UserStoreLodingState());
-    DioHelper.getAuthData(path: "stores/me").then((value) {
+    try {
+      final value = await DioHelper.getAuthData(path: "stores/me");
       ueserStoreModle = UeserStoreModle.fromJson(value?.data);
       emit(UserStoreSuccessState());
-    }).catchError((error) {
-      print(error.toString());
-      noStore = error.response.statusCode == 404;
+    } on DioException catch (error) {
+      noStore = error.response!.statusCode == 404;
       emit(UserStoreErroeState(noStore));
-    });
+    }
   }
 
   ProductDetailsModel? productDetailsModel;
-  getProductDetails({required int? id}) {
+  Future<void> getProductDetails({required int? id}) async {
     productDetailsModel = null;
     emit(GetProductDetailsLodingState());
-    DioHelper.getData(path: "products/$id").then((value) {
+    try {
+      final value = await DioHelper.getData(path: "products/$id");
       productDetailsModel = ProductDetailsModel.fromJson(value?.data);
       emit(GetProductDetailsSuccessState());
-      // print(value?.data);
-    }).catchError((error) {
-      print(error.toString());
+    } on DioException catch (error) {
+      print(error.response!.data);
       emit(GetProductDetailsErroeState());
-    });
+    }
   }
 
   RatingModel? ratingModel;
-  ratingProduct({required int id, required int rating}) {
+  Future<void> ratingProduct({required int id, required int rating}) async {
     emit(RatingProductLodingState());
-    DioHelper.postData(
-      path: 'product-ratings/',
-      data: {
-        'product_id': id,
-        'rating': rating,
-      },
-    ).then((value) {
+    try {
+      final value = await DioHelper.postData(
+        path: 'product-ratings',
+        data: {
+          'product_id': id,
+          'rating': rating,
+        },
+      );
       ratingModel = RatingModel.fromJson(value?.data);
       emit(RatingProductSuccessState(id));
-    }).catchError((error) {
-      print(error.toString());
-    });
+    } catch (error) {
+      log(error.toString());
+    }
   }
 
   StoreRatingModel? storeRatingModel;
-  ratingStore({required int? id, required int rating}) {
+  Future<void> ratingStore({required int? id, required int rating}) async {
     emit(RatingSroreLodingState());
-    DioHelper.postData(
+    try {
+      final value = await DioHelper.postData(
         path: "rate/store/$id",
-        data: FormData.fromMap({"rating": rating})).then((value) {
+        data: FormData.fromMap({"rating": rating}),
+      );
       ratingModel = RatingModel.fromJson(value?.data);
-      print(value?.data);
       emit(RatingSroreSuccessState());
-    }).catchError((error) {
-      print(error.toString());
+    } catch (error) {
       emit(RatingSroreErroeState());
-    });
+    }
   }
 }

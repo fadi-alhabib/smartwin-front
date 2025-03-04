@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,10 +27,8 @@ class CreateProductCubit extends Cubit<CreateProductState> {
           "price": price,
           "images[]": images
         })).then((value) {
-      print(value?.data);
       emit(CreateProductSuccessState());
     }).catchError((error) {
-      print(error.response.data);
       emit(CreateProductFailureState());
     });
   }
@@ -46,10 +46,8 @@ class CreateProductCubit extends Cubit<CreateProductState> {
           "description": description,
           "price": price,
         })).then((value) {
-      print(value?.data);
       emit(UpdateProductSuccessState());
     }).catchError((error) {
-      print(error.response.data);
       emit(UpdateProductFailureState());
     });
   }
@@ -66,7 +64,8 @@ class CreateProductCubit extends Cubit<CreateProductState> {
         emit(ProductImageOperationFailure(
             error: 'Failed to delete image. Error: ${response.statusCode}'));
       }
-    } catch (e) {
+    } on DioException catch (e) {
+      log(e.response!.data.toString());
       emit(ProductImageOperationFailure(error: e.toString()));
     }
   }
@@ -99,7 +98,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
         'image': await MultipartFile.fromFile(imagePath),
       });
       final Response response = await DioHelper.dio!.post(
-        'product-images/',
+        'product-images',
         data: formData,
       );
       if (response.statusCode == 201) {
@@ -109,7 +108,8 @@ class CreateProductCubit extends Cubit<CreateProductState> {
         emit(ProductImageOperationFailure(
             error: 'Failed to add image. Error: ${response.statusCode}'));
       }
-    } catch (e) {
+    } on DioException catch (e) {
+      log(e.response!.data.toString());
       emit(ProductImageOperationFailure(error: e.toString()));
     }
   }

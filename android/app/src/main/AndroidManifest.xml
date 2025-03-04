@@ -1,8 +1,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 📌 Add permissions here (OUTSIDE the <application> tag) -->
+    <!-- Internet for Dio and Pusher -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Storage for Image Picker and Share Plus -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <!-- Camera for Image Picker -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <!-- Notifications for Pusher (if needed) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <!-- Account access for Google Sign-In -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    
     <application
         android:label="sw"
-        android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher" 
+        android:usesCleartextTraffic="true">
         
         <activity
             android:name=".MainActivity"
@@ -13,7 +31,7 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
-            
+
             <meta-data android:name="flutter_deeplinking_enabled" android:value="true" />
 
             <intent-filter>

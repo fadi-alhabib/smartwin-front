@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sw/common/components/loading.dart';
 import 'package:sw/common/constants/colors.dart';
 import 'package:sw/common/utils/cache_helper.dart';
 import 'package:sw/features/auth/models/user_model.dart';
@@ -243,11 +244,7 @@ class GameCard extends StatelessWidget {
     return BlocBuilder<PusherBloc, PusherState>(
       builder: (context, state) {
         if (state is StartQuizLoading || state is C4GameStartLoading) {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: AppColors.primaryColor,
-            ),
-          );
+          return Loading();
         }
         return GestureDetector(
           onTap: state is StartQuizLoading ? null : onPressed,

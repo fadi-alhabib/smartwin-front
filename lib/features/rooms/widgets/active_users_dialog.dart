@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
+import 'package:lottie/lottie.dart';
+import 'package:sw/common/components/loading.dart';
 import 'package:sw/common/constants/colors.dart';
 import 'package:sw/features/auth/models/user_model.dart';
 import 'package:sw/features/rooms/cubit/room_cubit.dart';
@@ -51,12 +54,23 @@ class ActiveUsersDialog extends StatelessWidget {
                     height: 300,
                     child: () {
                       if (state is ActiveUsersLoading) {
-                        return const Center(child: CircularProgressIndicator());
+                        return Loading();
                       } else if (state is ActiveUsersLoaded) {
                         final List<UserModel> users = state.users;
                         if (users.isEmpty) {
-                          return const Center(
-                              child: Text('لا يوجد مستخدمين نشطين'));
+                          return Center(
+                              child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Lottie.asset("images/animations/sad.json"),
+                              Gap(10),
+                              Text(
+                                'لا يوجد مستخدمين نشطين',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ));
                         }
                         return ListView.builder(
                           shrinkWrap: true,
@@ -98,12 +112,7 @@ class ActiveUsersDialog extends StatelessWidget {
                 Positioned.fill(
                   child: Container(
                     color: Colors.black.withOpacity(0.5),
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation(AppColors.primaryColor),
-                      ),
-                    ),
+                    child: Loading(),
                   ),
                 ),
             ],

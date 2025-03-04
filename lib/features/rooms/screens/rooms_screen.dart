@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:sw/common/components/grid_view_builder.dart';
-import 'package:sw/common/constants/colors.dart';
+import 'package:sw/common/components/loading.dart';
 import 'package:sw/features/rooms/cubit/room_cubit.dart';
 import 'package:sw/features/rooms/screens/room_screen.dart';
 import 'package:sw/features/rooms/widgets/room_item.dart';
@@ -37,11 +37,7 @@ class RoomsScreen extends HookWidget {
             BlocBuilder<RoomCubit, RoomState>(
               builder: (context, state) {
                 if (state is RoomsLoading || state is RoomInitial) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.primaryColor,
-                    ),
-                  );
+                  return Loading();
                 } else if (state is RoomsSuccess) {
                   return GridViewBuilder(
                     crossAxisCount: 2,

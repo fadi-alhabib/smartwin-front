@@ -2,14 +2,12 @@ import 'package:buildcondition/buildcondition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:gap/gap.dart';
+import 'package:lottie/lottie.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:sw/features/stores/all_stores/models/all_stores_model.dart';
+import 'package:sw/common/components/loading.dart';
 
-import '../../../common/components/app_dialog.dart';
 import '../../../common/components/grid_view_builder.dart';
 import '../../../common/components/store_item_builder.dart';
 import '../products/product_details_screen.dart';
@@ -49,9 +47,7 @@ class StoreScreen extends HookWidget {
             var model = controller.storeDetails;
             return BuildCondition(
                 condition: model != null,
-                fallback: (context) => Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                fallback: (context) => Loading(),
                 builder: (context) {
                   return Padding(
                     padding: const EdgeInsets.all(10.0),
@@ -131,11 +127,8 @@ class StoreScreen extends HookWidget {
                                               size: 25,
                                               color: Colors.red,
                                             )
-                                          : const Icon(
-                                              Icons.favorite,
-                                              size: 25,
-                                              color: Colors.red,
-                                            ),
+                                          : Lottie.asset(
+                                              'images/animations/coin.json'),
                                       const SizedBox(
                                         height: 4,
                                       ),
@@ -177,17 +170,15 @@ class StoreScreen extends HookWidget {
                                           child: ScaleAnimation(
                                               child: GestureDetector(
                                             onTap: () {
-                                              AllStoresCubit()
-                                                  .get(context)
-                                                  .getProductDetails(
-                                                      id: model.store
-                                                          ?.products[index].id);
-
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
-                                                        ProductDetailsScreen(),
+                                                        ProductDetailsScreen(
+                                                            productId: model
+                                                                .store!
+                                                                .products[index]
+                                                                .id!),
                                                   ));
                                             },
                                             child: StoreItemBuilder(

@@ -1,0 +1,2 @@
+/home/jesusisking/dev/projects/smartwin/prod/front/sw/android/app/.cxx/RelWithDebInfo/5a215349/x86_64/CMakeFiles/edit_cache.dir
+/home/jesusisking/dev/projects/smartwin/prod/front/sw/android/app/.cxx/RelWithDebInfo/5a215349/x86_64/CMakeFiles/rebuild_cache.dir

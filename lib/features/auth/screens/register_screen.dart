@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sw/common/components/button_animated.dart' hide ScaleAnimation;
+import 'package:sw/common/components/loading.dart';
 import 'package:sw/common/components/logo.dart';
 import 'package:sw/common/components/text_field.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -122,8 +123,7 @@ class RegisterScreen extends HookWidget {
                       },
                       builder: (context, state) {
                         if (state is AuthLoading) {
-                          return const Center(
-                              child: CircularProgressIndicator());
+                          return Loading();
                         } else {
                           return const Text(
                             'إنشاء',

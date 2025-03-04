@@ -38,7 +38,7 @@ class Stores {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     image = json['image'];
-    rating = json['rating'];
+    rating = json['average_rating'];
     ratingsCount = json['ratings_count'];
     // json["products"].forEach((element) {
     //   products.add(Products.fromJson(element));

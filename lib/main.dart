@@ -17,6 +17,7 @@ import 'package:sw/features/home/cubit/home_cubit.dart';
 import 'package:sw/features/home/screens/main_screen.dart';
 import 'package:sw/features/rooms/bloc/pusher_bloc.dart';
 import 'package:sw/features/rooms/cubit/room_cubit.dart';
+import 'package:sw/features/stores/products/create/cubit/create_product_cubit.dart';
 
 import 'features/stores/all_stores/cubit/stores_cubit.dart';
 import 'features/stores/all_stores/store_screen.dart';
@@ -53,6 +54,7 @@ class MyApp extends HookWidget {
   Widget build(BuildContext context) {
     useEffect(() {
       initDeepLinks();
+      return null;
     }, []);
     return MultiBlocProvider(
       providers: [
@@ -69,6 +71,8 @@ class MyApp extends HookWidget {
         }),
         BlocProvider<PusherBloc>(create: (context) => PusherBloc()),
         BlocProvider<RoomCubit>(create: (context) => RoomCubit()),
+        BlocProvider<CreateProductCubit>(
+            create: (context) => CreateProductCubit()),
         // BlocProvider(
         //   create: (context) => C4Bloc(
         //       "ws://192.168.1.105:8080/ws/c4/974c0039-e0d2-4c53-b6b4-adad8fd99aef/"),

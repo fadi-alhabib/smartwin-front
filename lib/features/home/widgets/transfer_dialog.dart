@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sw/common/components/loading.dart';
 import 'package:sw/common/constants/colors.dart';
 import 'package:sw/features/home/cubit/home_cubit.dart';
 
@@ -219,14 +220,7 @@ class _TransferDialogState extends State<TransferDialog> {
               if (state is TransferLoading)
                 Positioned.fill(
                   child: Container(
-                    color: Colors.black.withOpacity(0.5),
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation(AppColors.primaryColor),
-                      ),
-                    ),
-                  ),
+                      color: Colors.black.withOpacity(0.5), child: Loading()),
                 ),
             ],
           );

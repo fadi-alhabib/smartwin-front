@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:sw/common/components/button_animated.dart' hide ScaleAnimation;
+import 'package:sw/common/components/loading.dart';
 import 'package:sw/common/components/logo.dart';
 import 'package:sw/common/components/text_field.dart';
 import 'package:sw/common/constants/colors.dart';
@@ -170,7 +171,7 @@ class CreateRoomScreen extends HookWidget {
                     },
                     builder: (context, state) {
                       if (state is RoomLoading) {
-                        return const CircularProgressIndicator();
+                        return Loading();
                       }
                       return const Text(
                         'إنشاء الغرفة',

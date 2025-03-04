@@ -36,7 +36,6 @@ class RoomCubit extends Cubit<RoomState> {
         response = await DioHelper.getAuthData(path: '/rooms/$id');
       } else {
         response = await DioHelper.getAuthData(path: '/rooms/me');
-        print(response!.data);
       }
       final room = RoomModel.fromJson(response!.data['data']);
       myRoom = room;
@@ -135,7 +134,6 @@ class RoomCubit extends Cubit<RoomState> {
           .toList();
       emit(ActiveUsersLoaded(users: users));
     } on DioException catch (e) {
-      print(e.response!.data);
       emit(ActiveUsersError(message: e.toString()));
     }
   }

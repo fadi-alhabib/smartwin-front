@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:lottie/lottie.dart';
+import 'package:sw/common/components/loading.dart';
 
 import '../../../../common/components/button_animated.dart';
 import '../../../../common/components/helpers.dart';
@@ -34,6 +34,7 @@ class CreateStoreScreen extends HookWidget {
   String? networkImage;
   bool update;
   String? id;
+
   @override
   Widget build(BuildContext context) {
     var image = useState<XFile?>(null);
@@ -94,8 +95,10 @@ class CreateStoreScreen extends HookWidget {
                                 await ImagePicker()
                                     .pickImage(source: ImageSource.gallery)
                                     .then((value) {
-                                  image.value = value!;
-                                  field.setValue(image.value?.path);
+                                  if (value != null) {
+                                    image.value = value;
+                                    field.setValue(image.value?.path);
+                                  }
                                 });
                               },
                               child: Container(
@@ -104,24 +107,28 @@ class CreateStoreScreen extends HookWidget {
                                 height: getScreenSize(context).height / 5,
                                 decoration: const BoxDecoration(
                                   gradient: LinearGradient(
-                                      colors: [
-                                        Color.fromARGB(255, 255, 210, 63),
-                                        Color.fromARGB(255, 255, 193, 10),
-                                        Color.fromARGB(255, 230, 180, 26),
-                                        Color.fromARGB(255, 214, 160, 80),
-                                      ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight),
+                                    colors: [
+                                      Color.fromARGB(255, 255, 210, 63),
+                                      Color.fromARGB(255, 255, 193, 10),
+                                      Color.fromARGB(255, 230, 180, 26),
+                                      Color.fromARGB(255, 214, 160, 80),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
                                   shape: BoxShape.circle,
                                 ),
-                                child: update
-                                    ? Image.network(networkImage.toString())
-                                    : image.value != null
-                                        ? Image.file(
-                                            File("${image.value?.path}"),
+                                child: image.value != null
+                                    ? Image.file(
+                                        File(image.value!.path),
+                                        fit: BoxFit.cover,
+                                      )
+                                    : (update && networkImage != null
+                                        ? Image.network(
+                                            networkImage!,
                                             fit: BoxFit.cover,
                                           )
-                                        : Lottie.asset("images/store.json"),
+                                        : Lottie.asset("images/store.json")),
                               ),
                             ),
                             field.hasError
@@ -209,9 +216,7 @@ class CreateStoreScreen extends HookWidget {
                       ),
                       state is CreateStoreLoadingState ||
                               state is UpdateStoreLoadingState
-                          ? const CircularProgressIndicator(
-                              color: Color.fromARGB(255, 255, 193, 10),
-                            )
+                          ? Loading()
                           : AnimatedButton(
                               onTap: () {
                                 if (formKey.currentState!.validate()) {
@@ -224,7 +229,7 @@ class CreateStoreScreen extends HookWidget {
                                         address: storeAddressController.text,
                                         phone: storePhoneController.text,
                                         image: image.value != null
-                                            ? File("${image.value?.path}")
+                                            ? File(image.value!.path)
                                             : null);
                                   } else {
                                     CreateStoreCubit().get(context).createStore(
@@ -243,7 +248,7 @@ class CreateStoreScreen extends HookWidget {
                                 width: getScreenSize(context).width / 2,
                                 child: Center(
                                     child: Text(update ? "تعديل" : "إنشاء")),
-                              ))
+                              )),
                     ],
                   ),
                 ),

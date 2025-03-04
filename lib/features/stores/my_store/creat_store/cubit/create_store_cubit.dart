@@ -20,22 +20,21 @@ class CreateStoreCubit extends Cubit<CreateStoreState> {
       required String phone,
       required File image}) async {
     emit(CreateStoreLoadingState());
-    DioHelper.postData(
-        path: "stores/",
-        data: FormData.fromMap({
-          "name": name,
-          "type": type,
-          "country": country,
-          "address": address,
-          "phone": phone,
-          "image": await MultipartFile.fromFile(image.path),
-        })).then((value) {
-      print(value?.data);
+    try {
+      await DioHelper.postData(
+          path: "stores",
+          data: FormData.fromMap({
+            "name": name,
+            "type": type,
+            "country": country,
+            "address": address,
+            "phone": phone,
+            "image": await MultipartFile.fromFile(image.path),
+          }));
       emit(CreateStoreSuccessState());
-    }).catchError((error) {
-      print(error.response.data);
+    } on DioException {
       emit(CreateStoreErrorState());
-    });
+    }
   }
 
   updateStore(
@@ -67,10 +66,8 @@ class CreateStoreCubit extends Cubit<CreateStoreState> {
                     "phone": phone,
                   }))
         .then((value) {
-      print(value?.requestOptions.data.fields);
       emit(UpdateStoreSuccessState());
     }).catchError((error) {
-      print(error.response.data);
       emit(UpdateStoreErrorState());
     });
   }

@@ -2,6 +2,7 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:sw/common/components/loading.dart';
 import '/common/components/store_item_builder.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'cubit/stores_cubit.dart';
@@ -25,10 +26,7 @@ class StoreHomeScreen extends HookWidget {
         var allStoresModel = cubit.allStoresModel;
 
         return ConditionalBuilder(
-          fallback: (context) => const Center(
-              child: CircularProgressIndicator(
-            color: Colors.yellow,
-          )),
+          fallback: (context) => Loading(),
           condition: allStoresModel != null,
           builder: (context) => NotificationListener<ScrollNotification>(
             onNotification: (scrollInfo) {
@@ -89,9 +87,10 @@ class StoreHomeScreen extends HookWidget {
                           title: "${allStoresModel[index].name}",
                           country: "${allStoresModel[index].country}",
                           description: "${allStoresModel[index].type}",
-                          rateWidget: true,
-                          rating: 3.toDouble(),
+                          rateWidget: false,
+                          // rating: allStoresModel[index].rating!.toDouble(),
                           priceWidget: false,
+                          price: "20.00",
                         ),
                       ),
                     ),
@@ -101,11 +100,11 @@ class StoreHomeScreen extends HookWidget {
                       const NeverScrollableScrollPhysics(), // Disable grid scroll
                 ),
                 if (state is AllStoresLoadingState) ...[
-                  const Center(child: CircularProgressIndicator()),
+                  const Loading(),
                 ],
                 // Show a loading indicator at the bottom when more data is being loaded
                 if (cubit.isLoading) ...[
-                  const Center(child: CircularProgressIndicator()),
+                  const Loading(),
                 ],
               ],
             ),

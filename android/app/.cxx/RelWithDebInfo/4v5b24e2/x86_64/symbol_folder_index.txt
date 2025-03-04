@@ -1,0 +1,1 @@
+/home/jesusisking/dev/projects/smartwin/prod/front/sw/build/app/intermediates/cxx/RelWithDebInfo/4v5b24e2/obj/x86_64

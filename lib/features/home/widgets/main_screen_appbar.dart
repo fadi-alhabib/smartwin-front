@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sw/common/constants/colors.dart';
 import 'package:sw/features/home/cubit/home_cubit.dart';
 
@@ -30,7 +31,7 @@ class MainScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
                     return Text(
                       state.data.availableTime!.toString(),
                       style: const TextStyle(
-                        color: Color.fromARGB(255, 223, 41, 53),
+                        color: Color.fromARGB(255, 33, 150, 243),
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -40,11 +41,9 @@ class MainScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
                   }
                 },
               ),
-              const SizedBox(width: 5),
-              const Icon(
-                Icons.favorite,
-                color: Color.fromARGB(255, 223, 41, 53),
-              ),
+              Lottie.asset(
+                'images/animations/clock.json',
+              )
             ],
           ),
         )

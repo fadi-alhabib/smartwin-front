@@ -8,7 +8,7 @@ class DioHelper {
   static init() {
     dio = Dio(
       BaseOptions(
-        baseUrl: "http://127.0.0.1:8000/api/",
+        baseUrl: "https://fazetarab.com/api/",
         headers: {"Accept": "application/json"},
       ),
     );
@@ -16,10 +16,12 @@ class DioHelper {
 
   static Future<Response?> getData(
       {required String path, Map<String, dynamic>? queryParameters}) async {
-    return await dio?.get(
-      path,
-      queryParameters: queryParameters,
-    );
+    return await dio?.get(path,
+        queryParameters: queryParameters,
+        options: Options(headers: {
+          "Authorization": "Bearer ${CacheHelper.getCache(key: 'token')}",
+          "Accept": "application/json"
+        }));
   }
 
   static Future<Response?> getAuthData(
@@ -38,13 +40,18 @@ class DioHelper {
     required String path,
     dynamic data,
     Map<String, String>? headers,
+    bool? isAuth = true,
   }) async {
+    headers = headers ?? {};
+    if (isAuth != null && isAuth) {
+      headers['Authorization'] = 'Bearer ${CacheHelper.getCache(key: 'token')}';
+    }
     return await dio?.post(path,
         data: data,
         options: Options(headers: {
-          "Authorization": 'Bearer ${CacheHelper.getCache(key: 'token')}',
+          // "Authorization": 'Bearer ${CacheHelper.getCache(key: 'token')}',
           'Accept': 'application/json',
-          ...?headers,
+          ...headers,
         }));
   }
 
