@@ -349,13 +349,25 @@ class PusherBloc extends Bloc<PusherBlocEvent, PusherState> {
     emit(C4MoveLoading());
     try {
       await DioHelper.postData(
-          path: '/room/${event.roomId}/c4/${event.gameId}/make-move',
-          data: {'column': event.column});
+        path: '/room/${event.roomId}/c4/${event.gameId}/make-move',
+        data: {'column': event.column},
+      );
       // The backend will trigger a Pusher event “move.made” to update the board.
       emit(C4MoveSuccess());
     } on DioException catch (e) {
       log(e.response!.data.toString());
-      emit(C4MoveError(error: "ليس دورك"));
+      String errorMsg = "حدث خطأ ما";
+      if (e.response?.data != null && e.response!.data['message'] != null) {
+        final msg = e.response!.data['message'];
+        if (msg.contains("Column is full")) {
+          errorMsg = "العمود ممتلئ، الرجاء اختيار عمود آخر.";
+        } else if (msg.contains("Not your turn")) {
+          errorMsg = "ليس دورك";
+        } else {
+          errorMsg = msg;
+        }
+      }
+      emit(C4MoveError(error: errorMsg));
     }
   }
 

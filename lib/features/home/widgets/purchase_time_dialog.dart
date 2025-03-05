@@ -3,12 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sw/common/components/loading.dart';
 import 'package:sw/common/constants/colors.dart';
 import 'package:sw/features/rooms/cubit/room_cubit.dart';
-// Adjust the import as needed
 
 class PurchaseTimeDialog extends StatelessWidget {
   final int roomId;
 
-  const PurchaseTimeDialog({super.key, required this.roomId});
+  PurchaseTimeDialog({super.key, required this.roomId});
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +18,7 @@ class PurchaseTimeDialog extends StatelessWidget {
           if (state is TimePurchaseSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: const Text(
-                  "تمت العملية بنجاح!!",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                content: const Text("تمت العملية بنجاح!!"),
                 backgroundColor: AppColors.primaryColor,
               ),
             );
@@ -31,11 +26,7 @@ class PurchaseTimeDialog extends StatelessWidget {
           } else if (state is TimePurchaseError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(
-                  'Error: ${state.error}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                content: Text('Error: ${state.error}'),
                 backgroundColor: Colors.redAccent,
               ),
             );
@@ -49,47 +40,102 @@ class PurchaseTimeDialog extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                title: Text(
-                  'لقد انتهى وقت اللعب يرجى شراء الوقت للإكمال',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                title: Column(
+                  children: [
+                    Text(
+                      'تقييم الوقت المخصص لك',
+                      style: TextStyle(
+                        color: AppColors.primaryColor,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    // const SizedBox(height: 8),
+                    // Text(
+                    //   'شراء الوقت من هنا',
+                    //   style: TextStyle(
+                    //     color: Colors.grey[600],
+                    //     fontSize: 16,
+                    //   ),
+                    // ),
+                  ],
                 ),
                 content: SingleChildScrollView(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const SizedBox(height: 20),
-                      // FIXME::
-                      Row(
-                        children: [
-                          Expanded(
-                              child: _buildTimeCard(context,
-                                  minutes: 20, price: 30)),
-                          const SizedBox(width: 8),
-                          Expanded(
-                              child: _buildTimeCard(context,
-                                  minutes: 60, price: 50)),
-                          const SizedBox(width: 8),
-                          Expanded(
-                              child: _buildTimeCard(context,
-                                  minutes: 120, price: 100)),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
+                      ..._timeOptions.map((option) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: ListTile(
+                              leading: Text(
+                                "${option['minutes']} دقيقة ب ${option['price']} نقطة",
+                                style: TextStyle(
+                                  color: AppColors.primaryColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              trailing: ElevatedButton(
+                                onPressed: () {
+                                  context.read<RoomCubit>().purchaseTime(
+                                        roomId: roomId,
+                                        minutes: option['minutes']!,
+                                        price: option['price']!,
+                                      );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.backgroundColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    side: BorderSide(
+                                      color: AppColors.primaryColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
+                                child: Text(
+                                  "شراء",
+                                  style: TextStyle(
+                                    color: AppColors.primaryColor,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )),
+                      // ElevatedButton(
+                      //   style: ElevatedButton.styleFrom(
+                      //     backgroundColor: AppColors.primaryColor,
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(8),
+                      //     ),
+                      //     padding: const EdgeInsets.symmetric(
+                      //       horizontal: 30,
+                      //       vertical: 12,
+                      //     ),
+                      //   ),
+                      //   onPressed: () {
+                      //     // Handle points purchase
+                      //   },
+                      //   child: const Text(
+                      //     'شراء النقاط من هنا',
+                      //     style: TextStyle(
+                      //       color: Colors.white,
+                      //       fontSize: 16,
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
               ),
-              // Display a loading overlay when in loading state.
               if (state is TimePurchaseLoading)
                 Positioned.fill(
                   child: Container(
-                      color: Colors.black.withOpacity(0.5), child: Loading()),
+                    color: Colors.black.withOpacity(0.5),
+                    child: const Loading(),
+                  ),
                 ),
             ],
           );
@@ -98,71 +144,9 @@ class PurchaseTimeDialog extends StatelessWidget {
     );
   }
 
-  /// Builds a card for a specific time/price option with a fixed size.
-  Widget _buildTimeCard(BuildContext context,
-      {required int minutes, required int price}) {
-    return Card(
-      color: AppColors.backgroundColor,
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: AppColors.primaryColor, width: 1.5),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: () {
-          context.read<RoomCubit>().purchaseTime(
-                roomId: roomId,
-                minutes: minutes,
-                price: price,
-              );
-        },
-        child: SizedBox(
-          height: 120,
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '$minutes',
-                  style: TextStyle(
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  'دقيقة',
-                  style: TextStyle(
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '$price نقطة',
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 14,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  final List<Map<String, int>> _timeOptions = [
+    {'minutes': 30, 'price': 100},
+    {'minutes': 60, 'price': 200},
+    {'minutes': 360, 'price': 500},
+  ];
 }
